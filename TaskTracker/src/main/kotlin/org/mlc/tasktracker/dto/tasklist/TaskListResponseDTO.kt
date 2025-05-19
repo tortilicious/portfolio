@@ -15,6 +15,6 @@ import org.mlc.tasktracker.dto.task.TaskResponseDTO
 data class TaskListResponseDTO(
   val id: String,
   val title: String,
-  val userId: String, // Assuming User ID is a String as per your User model
-  val tasks: List<TaskResponseDTO> = emptyList() // Consistent with your latest update
+  val userId: String,
+  val tasks: List<TaskResponseDTO> = emptyList()
 )
