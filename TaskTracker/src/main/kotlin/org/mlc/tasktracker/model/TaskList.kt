@@ -1,14 +1,6 @@
 package org.mlc.tasktracker.model
 
-import jakarta.persistence.CascadeType
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.FetchType
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.OneToMany
-import jakarta.persistence.Table
+import jakarta.persistence.*
 
 /**
  * Represents a list that groups tasks, belonging to a specific user.
@@ -32,18 +24,18 @@ data class TaskList(
   @Column(length = 36)
   val id: String,
 
-  @Column(nullable = false, length = 100) // Removed unique = true from title for now
+  @Column(nullable = false, length = 100)
   val title: String,
 
-  @ManyToOne(fetch = FetchType.LAZY) // Correct: TaskList belongs to one User
-  @JoinColumn(name = "user_id", nullable = false) // Correct: Defines the foreign key column
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "user_id", nullable = false)
   val user: User,
 
   @OneToMany(
-    mappedBy = "taskList", // Correct: "taskList" is the property in Task that owns the relationship
+    mappedBy = "taskList",
     cascade = [CascadeType.ALL],
     orphanRemoval = true,
-    fetch = FetchType.LAZY // Correct: Use LAZY for collections
+    fetch = FetchType.LAZY
   )
   val tasks: List<Task> = mutableListOf()
 )

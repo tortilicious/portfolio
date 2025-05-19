@@ -1,14 +1,6 @@
 package org.mlc.tasktracker.model
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.EnumType
-import jakarta.persistence.Enumerated
-import jakarta.persistence.FetchType
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import java.time.LocalDate
 
 /**
@@ -34,7 +26,7 @@ data class Task(
   @Column(length = 36)
   val id: String,
 
-  @Column(nullable = false, length = 200) // Increased length for task name
+  @Column(nullable = false, length = 200)
   val name: String,
 
   @Column(length = 1000)
@@ -43,14 +35,14 @@ data class Task(
   @Column(nullable = false)
   val completed: Boolean = false,
 
-  @Column(nullable = false) // Kept as non-nullable as per your last version
-  val dueDate: LocalDate,
+  @Column
+  val dueDate: LocalDate? = null,
 
   @Enumerated(EnumType.STRING)
-  @Column(nullable = false, length = 10) // Ensure length accommodates "HIGH", "MEDIUM", "LOW"
+  @Column(nullable = false, length = 10)
   val priority: TaskPriority = TaskPriority.MID,
 
-  @ManyToOne(fetch = FetchType.LAZY) // Correct: Task belongs to one TaskList
-  @JoinColumn(name = "task_list_id", nullable = false) // Correct: Defines the foreign key column
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "task_list_id", nullable = false)
   val taskList: TaskList
 )
