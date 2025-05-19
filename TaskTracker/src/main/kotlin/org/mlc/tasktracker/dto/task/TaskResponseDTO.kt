@@ -16,7 +16,7 @@ import org.mlc.tasktracker.model.TaskPriority
  * @property taskListId The identifier of the task list to which this task belongs.
  */
 data class TaskResponseDTO(
-  val id: Int,
+  val id: String,
   val name: String,
   val description: String?,
   val completed: Boolean,

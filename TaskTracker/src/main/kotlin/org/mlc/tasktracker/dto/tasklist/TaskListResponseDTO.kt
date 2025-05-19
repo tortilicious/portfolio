@@ -13,7 +13,7 @@ import org.mlc.tasktracker.dto.task.TaskResponseDTO
  * Defaults to an empty list if there are no tasks or if they are not included.
  */
 data class TaskListResponseDTO(
-  val id: Int,
+  val id: String,
   val title: String,
   val userId: String, // Assuming User ID is a String as per your User model
   val tasks: List<TaskResponseDTO> = emptyList() // Consistent with your latest update
