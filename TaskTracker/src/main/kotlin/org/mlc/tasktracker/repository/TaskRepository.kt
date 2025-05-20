@@ -28,5 +28,5 @@ interface TaskRepository : JpaRepository<Task, String> {
    * @param completed The completion status to filter by (true for completed, false for pending).
    * @return A list of Task entities matching the criteria.
    */
-  fun findByTaskListIdAndCompleted(taskListId: String, completed: Boolean): List<Task>
+  fun findByTaskListIdAndCompleted(taskListId: String, completed: Boolean? = null): List<Task>
 }

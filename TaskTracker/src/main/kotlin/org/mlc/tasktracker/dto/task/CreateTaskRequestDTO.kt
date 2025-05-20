@@ -15,6 +15,6 @@ import org.mlc.tasktracker.model.TaskPriority
 data class CreateTaskRequestDTO(
   val name: String,
   val description: String? = null,
-  val dueDate: LocalDate? = null, // Consistent with your latest update, making it optional
+  val dueDate: java.time.LocalDate? = null, // Consistent with your latest update, making it optional
   val priority: TaskPriority = TaskPriority.MID,
 )

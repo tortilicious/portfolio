@@ -20,7 +20,7 @@ data class TaskResponseDTO(
   val name: String,
   val description: String?,
   val completed: Boolean,
-  val dueDate: LocalDate?, // Consistent with your latest update
+  val dueDate: java.time.LocalDate?, // Consistent with your latest update
   val priority: TaskPriority,
-  val taskListId: Int
+  val taskListId: String
 )

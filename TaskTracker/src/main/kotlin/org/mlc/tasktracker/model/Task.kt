@@ -27,20 +27,20 @@ data class Task(
   val id: String,
 
   @Column(nullable = false, length = 200)
-  val name: String,
+  var name: String,
 
   @Column(length = 1000)
-  val description: String? = null,
+  var description: String? = null,
 
   @Column(nullable = false)
-  val completed: Boolean = false,
+  var completed: Boolean = false,
 
   @Column
-  val dueDate: LocalDate? = null,
+  var dueDate: LocalDate? = null,
 
   @Enumerated(EnumType.STRING)
   @Column(nullable = false, length = 10)
-  val priority: TaskPriority = TaskPriority.MID,
+  var priority: TaskPriority = TaskPriority.MID,
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "task_list_id", nullable = false)

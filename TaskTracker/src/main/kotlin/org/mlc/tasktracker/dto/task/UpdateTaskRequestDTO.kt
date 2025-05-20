@@ -1,6 +1,5 @@
 package org.mlc.tasktracker.dto.task
 
-import kotlinx.datetime.LocalDate
 import org.mlc.tasktracker.model.TaskPriority
 
 /**
@@ -18,6 +17,6 @@ data class UpdateTaskRequestDTO(
   val name: String? = null,
   val description: String? = null,
   val completed: Boolean? = null,
-  val dueDate: LocalDate? = null,
+  val dueDate: java.time.LocalDate? = null,
   val priority: TaskPriority? = null
 )
