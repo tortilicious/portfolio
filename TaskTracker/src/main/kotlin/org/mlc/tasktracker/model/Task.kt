@@ -22,27 +22,27 @@ import java.time.LocalDate
 @Table(name = "tasks")
 data class Task(
 
-  @Id
-  @Column(length = 36)
-  val id: String,
+    @Id
+    @Column(length = 36)
+    val id: String,
 
-  @Column(nullable = false, length = 200)
-  var name: String,
+    @Column(nullable = false, length = 200)
+    var name: String,
 
-  @Column(length = 1000)
-  var description: String? = null,
+    @Column(length = 1000)
+    var description: String? = null,
 
-  @Column(nullable = false)
-  var completed: Boolean = false,
+    @Column(nullable = false)
+    var completed: Boolean = false,
 
-  @Column
-  var dueDate: LocalDate? = null,
+    @Column
+    var dueDate: LocalDate? = null,
 
-  @Enumerated(EnumType.STRING)
-  @Column(nullable = false, length = 10)
-  var priority: TaskPriority = TaskPriority.MID,
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 10)
+    var priority: TaskPriority = TaskPriority.MID,
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "task_list_id", nullable = false)
-  val taskList: TaskList
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "task_list_id", nullable = false)
+    val taskList: TaskList
 )

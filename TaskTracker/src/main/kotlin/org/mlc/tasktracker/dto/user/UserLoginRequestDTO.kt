@@ -8,6 +8,6 @@ package org.mlc.tasktracker.dto.user
  * @property password The password of the user trying to log in.
  */
 data class UserLoginRequestDTO(
-  val userName: String,
-  val password: String
+    val userName: String,
+    val password: String
 )

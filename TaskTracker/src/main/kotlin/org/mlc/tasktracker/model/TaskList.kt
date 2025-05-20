@@ -20,22 +20,22 @@ import jakarta.persistence.*
 @Table(name = "task_lists")
 data class TaskList(
 
-  @Id
-  @Column(length = 36)
-  val id: String,
+    @Id
+    @Column(length = 36)
+    val id: String,
 
-  @Column(nullable = false, length = 100)
-  val title: String,
+    @Column(nullable = false, length = 100)
+    var title: String,
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "user_id", nullable = false)
-  val user: User,
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    val user: User,
 
-  @OneToMany(
-    mappedBy = "taskList",
-    cascade = [CascadeType.ALL],
-    orphanRemoval = true,
-    fetch = FetchType.LAZY
-  )
-  val tasks: List<Task> = mutableListOf()
+    @OneToMany(
+        mappedBy = "taskList",
+        cascade = [CascadeType.ALL],
+        orphanRemoval = true,
+        fetch = FetchType.LAZY
+    )
+    val tasks: List<Task> = mutableListOf()
 )

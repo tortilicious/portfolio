@@ -19,21 +19,21 @@ import jakarta.persistence.*
 @Table(name = "users")
 data class User(
 
-  @Id
-  val id: String,
+    @Id
+    val id: String,
 
-  @Column(name = "user_name", nullable = false, unique = true, length = 50)
-  val userName: String,
+    @Column(name = "user_name", nullable = false, unique = true, length = 50)
+    val userName: String,
 
-  @Column(nullable = false, length = 255)
-  val password: String,
+    @Column(nullable = false, length = 255)
+    var password: String,
 
 
-  @OneToMany(
-    mappedBy = "user",
-    cascade = [CascadeType.ALL],
-    orphanRemoval = true,
-    fetch = FetchType.LAZY
-  )
-  val taskLists: List<TaskList>
+    @OneToMany(
+        mappedBy = "user",
+        cascade = [CascadeType.ALL],
+        orphanRemoval = true,
+        fetch = FetchType.LAZY
+    )
+    val taskLists: List<TaskList>
 )

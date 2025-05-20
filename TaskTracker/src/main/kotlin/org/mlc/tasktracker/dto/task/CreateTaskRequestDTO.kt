@@ -1,6 +1,5 @@
 package org.mlc.tasktracker.dto.task
 
-import kotlinx.datetime.LocalDate
 import org.mlc.tasktracker.model.TaskPriority
 
 /**
@@ -13,8 +12,8 @@ import org.mlc.tasktracker.model.TaskPriority
  * @property priority The priority of the task. Defaults to [TaskPriority.MID] if not specified.
  */
 data class CreateTaskRequestDTO(
-  val name: String,
-  val description: String? = null,
-  val dueDate: java.time.LocalDate? = null, // Consistent with your latest update, making it optional
-  val priority: TaskPriority = TaskPriority.MID,
+    val name: String,
+    val description: String? = null,
+    val dueDate: java.time.LocalDate? = null, // Consistent with your latest update, making it optional
+    val priority: TaskPriority = TaskPriority.MID,
 )

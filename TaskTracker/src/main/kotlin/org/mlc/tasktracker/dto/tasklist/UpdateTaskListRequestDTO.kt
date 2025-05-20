@@ -6,5 +6,5 @@ package org.mlc.tasktracker.dto.tasklist
  * @property title The new title or name for the task list. This field is mandatory for an update.
  */
 data class UpdateTaskListRequestDTO(
-  val title: String,
+    val title: String,
 )

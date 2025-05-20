@@ -9,6 +9,6 @@ package org.mlc.tasktracker.dto.user
  * @property token The JSON Web Token (JWT) or other authentication token for the session.
  */
 data class AuthResponseDTO(
-  val userName: String,
-  val token: String
+    val userName: String,
+    val token: String
 )

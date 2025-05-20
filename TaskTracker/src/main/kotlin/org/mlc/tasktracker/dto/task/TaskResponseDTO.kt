@@ -1,6 +1,5 @@
 package org.mlc.tasktracker.dto.task
 
-import kotlinx.datetime.LocalDate
 import org.mlc.tasktracker.model.TaskPriority
 
 /**
@@ -16,11 +15,11 @@ import org.mlc.tasktracker.model.TaskPriority
  * @property taskListId The identifier of the task list to which this task belongs.
  */
 data class TaskResponseDTO(
-  val id: String,
-  val name: String,
-  val description: String?,
-  val completed: Boolean,
-  val dueDate: java.time.LocalDate?, // Consistent with your latest update
-  val priority: TaskPriority,
-  val taskListId: String
+    val id: String,
+    val name: String,
+    val description: String?,
+    val completed: Boolean,
+    val dueDate: java.time.LocalDate?, // Consistent with your latest update
+    val priority: TaskPriority,
+    val taskListId: String
 )

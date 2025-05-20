@@ -7,5 +7,5 @@ package org.mlc.tasktracker.dto.tasklist
  * @property title The title or name of the task list. This field is mandatory.
  */
 data class CreateTaskListRequestDTO(
-  val title: String,
+    val title: String,
 )

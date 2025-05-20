@@ -14,9 +14,9 @@ import org.mlc.tasktracker.model.TaskPriority
  * @property priority An optional new priority for the task.
  */
 data class UpdateTaskRequestDTO(
-  val name: String? = null,
-  val description: String? = null,
-  val completed: Boolean? = null,
-  val dueDate: java.time.LocalDate? = null,
-  val priority: TaskPriority? = null
+    val name: String? = null,
+    val description: String? = null,
+    val completed: Boolean? = null,
+    val dueDate: java.time.LocalDate? = null,
+    val priority: TaskPriority? = null
 )

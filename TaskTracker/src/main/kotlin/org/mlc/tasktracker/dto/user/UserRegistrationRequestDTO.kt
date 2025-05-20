@@ -8,6 +8,6 @@ package org.mlc.tasktracker.dto.user
  * @property password The desired password for the new user.
  */
 data class UserRegistrationRequestDTO(
-  val userName: String,
-  val password: String
+    val userName: String,
+    val password: String
 )
