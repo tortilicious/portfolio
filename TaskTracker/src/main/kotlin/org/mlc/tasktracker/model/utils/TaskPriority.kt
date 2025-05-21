@@ -1,4 +1,4 @@
-package org.mlc.tasktracker.model
+package org.mlc.tasktracker.model.utils
 
 enum class TaskPriority {
     HIGH,

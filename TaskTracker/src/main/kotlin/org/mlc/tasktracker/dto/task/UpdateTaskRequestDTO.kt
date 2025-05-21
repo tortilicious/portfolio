@@ -1,6 +1,6 @@
 package org.mlc.tasktracker.dto.task
 
-import org.mlc.tasktracker.model.TaskPriority
+import org.mlc.tasktracker.model.utils.TaskPriority
 
 /**
  * Data Transfer Object (DTO) for updating an existing task.

@@ -1,6 +1,7 @@
 package org.mlc.tasktracker.model
 
 import jakarta.persistence.*
+import org.mlc.tasktracker.model.utils.TaskPriority
 import java.time.LocalDate
 
 /**

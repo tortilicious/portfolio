@@ -47,7 +47,7 @@ class TaskListServiceImpl(
     }
 
     @Transactional(readOnly = true)
-    override fun getTaskListByIdAndUserId(userId: String, taskListId: String): TaskListResponseDTO {
+    override fun getTaskListByIdAndUserId(taskListId: String, userId: String): TaskListResponseDTO {
         val taskListEntity = taskListRepository.findByIdAndUserId(taskListId, userId)
             ?: throw TaskListNotFoundException("Task list with ID $taskListId not found for user $userId, or user is not authorized.")
         return taskListEntity.toResponseDTO()

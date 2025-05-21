@@ -8,10 +8,12 @@ import org.mlc.tasktracker.exception.TaskListNotFoundException
 import org.mlc.tasktracker.exception.TaskNotFoundException
 import org.mlc.tasktracker.exception.UserNotFoundException
 import org.mlc.tasktracker.model.Task
+import org.mlc.tasktracker.model.utils.TaskSortField
 import org.mlc.tasktracker.repository.TaskListRepository
 import org.mlc.tasktracker.repository.TaskRepository
 import org.mlc.tasktracker.repository.UserRepository
 import org.mlc.tasktracker.service.mapper.toResponseDTO
+import org.springframework.data.domain.Sort
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -74,7 +76,8 @@ class TaskServiceImpl(
      *
      * @param userId The unique identifier of the user attempting to access the task.
      * @param taskId The unique identifier of the task to retrieve.
-     * @return A [TaskResponseDTO] representing the found task if it exists and belongs to the user, otherwise `null`.
+     * @return A [TaskResponseDTO] representing the found task if it exists and belongs to the user.
+     * @throws TaskNotFoundException if the task is not found.
      * @throws AuthorizationException if the user with the given [userId] is not authorized to access the task with the given [taskId].
      */
     @Transactional(readOnly = true)
@@ -89,23 +92,50 @@ class TaskServiceImpl(
     }
 
     /**
-     * Retrieves all tasks belonging to a specific task list, optionally filtered by their completion status.
+     * Retrieves all tasks belonging to a specific task list for a given user.
+     * Tasks can be optionally filtered by their completion status and sorted.
      *
      * @param userId The unique identifier of the user who owns the task list.
      * @param taskListId The unique identifier of the task list whose tasks are to be retrieved.
-     * @param completed Optional boolean to filter tasks by their completion status (`true` for completed, `false` for pending, `null` for all).
-     * @return A [List] of [TaskResponseDTO] representing the tasks in the specified task list, filtered by completion status if provided.
+     * @param completed Optional boolean to filter tasks by their completion status.
+     * `true` for completed tasks, `false` for pending tasks, `null` for all tasks.
+     * @param sortBy Optional field name by which to sort the tasks (e.g., "dueDate", "priority", "name").
+     * These should match property names in the Task entity.
+     * @param order Optional sort order ("asc" for ascending, "desc" for descending). Defaults to ascending.
+     * @return A [List] of [TaskResponseDTO]s representing the tasks, filtered and sorted as requested.
      * Returns an empty list if the task list is not found or does not belong to the user.
      */
     @Transactional(readOnly = true)
-    override fun getTasksByTaskListId(userId: String, taskListId: String, completed: Boolean?): List<TaskResponseDTO> {
-        val taskList = taskListRepository.findByIdAndUserId(taskListId, userId)
+    override fun getTasksByTaskListId(
+        userId: String,
+        taskListId: String,
+        completed: Boolean?,
+        sortBy: TaskSortField?,
+        order: String?
+    ): List<TaskResponseDTO> {
+        // 1. Verify that the TaskList exists and belongs to the user.
+        // If the list doesn't exist or doesn't belong to the user, return an empty list.
+        taskListRepository.findByIdAndUserId(taskListId, userId)
             ?: return emptyList()
-        return if (completed == null) {
-            taskRepository.findByTaskListId(taskListId).map { it.toResponseDTO() }
+
+        // 2. Construct the Sort object for ordering.
+        val sortDirection = if ("desc".equals(order, ignoreCase = true)) { // Corrected: Use 'order' here
+            Sort.Direction.DESC
         } else {
-            taskRepository.findByTaskListIdAndCompleted(taskListId, completed).map { it.toResponseDTO() }
+            Sort.Direction.ASC // Default to ascending order.
         }
+
+        val sort = sortBy?.let { Sort.by(sortDirection, it.fieldName) } ?: Sort.unsorted()
+
+        // 3. Fetch tasks from the repository, applying the filter and sort.
+        val tasks = if (completed == null) {
+            taskRepository.findByTaskListId(taskListId, sort)
+        } else {
+            taskRepository.findByTaskListIdAndCompleted(taskListId, completed, sort)
+        }
+
+        // 4. Map entities to DTOs and return.
+        return tasks.map { it.toResponseDTO() }
     }
 
     /**
@@ -114,7 +144,8 @@ class TaskServiceImpl(
      * @param userId The unique identifier of the user attempting to update the task.
      * @param taskId The unique identifier of the task to be updated.
      * @param updateTaskRequestDTO The DTO containing the updated information for the task.
-     * @return A [TaskResponseDTO] representing the updated task if the operation is successful, otherwise `null`.
+     * @return A [TaskResponseDTO] representing the updated task.
+     * @throws TaskNotFoundException if the task is not found.
      * @throws AuthorizationException if the user with the given [userId] is not authorized to update the task with the given [taskId].
      */
     @Transactional
@@ -144,7 +175,7 @@ class TaskServiceImpl(
      *
      * @param userId The unique identifier of the user attempting to delete the task.
      * @param taskId The unique identifier of the task to be deleted.
-     * @return `true` if the task was successfully found and deleted, `false` otherwise.
+     * @return `true` if the task was successfully found and deleted.
      * @throws AuthorizationException if the user with the given [userId] is not authorized to delete the task with the given [taskId].
      * @throws TaskNotFoundException if the task with the given [taskId] is not found.
      */
@@ -158,6 +189,7 @@ class TaskServiceImpl(
                 throw AuthorizationException("User with ID $userId is not authorized to access task with ID $taskId")
             }
         }
+        // If task not found, return false. Or throw TaskNotFoundException if preferred behavior.
         return false
     }
 }

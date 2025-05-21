@@ -3,6 +3,7 @@ package org.mlc.tasktracker.controller
 import org.mlc.tasktracker.dto.task.CreateTaskRequestDTO
 import org.mlc.tasktracker.dto.task.TaskResponseDTO
 import org.mlc.tasktracker.dto.task.UpdateTaskRequestDTO
+import org.mlc.tasktracker.model.utils.TaskSortField
 import org.mlc.tasktracker.service.TaskService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -59,9 +60,11 @@ class TaskController (private val taskService: TaskService) {
     fun fetchTasks(
         @RequestHeader("X-User-Id") userId: String,
         @PathVariable listId: String,
-        @RequestParam(required = false) completed: Boolean?
+        @RequestParam(required = false) completed: Boolean?,
+        @RequestParam(required = false) sortBy: TaskSortField?,
+        @RequestParam(required = false) order: String?
     ): ResponseEntity<List<TaskResponseDTO>> {
-        val list = taskService.getTasksByTaskListId(userId, listId, completed)
+        val list = taskService.getTasksByTaskListId(userId, listId, completed, sortBy, order)
         return ResponseEntity(list, HttpStatus.OK)
     }
 
