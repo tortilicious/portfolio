@@ -40,7 +40,7 @@ interface TaskListService {
      * @return A [TaskListResponseDTO] representing the found task list.
      * @throws TaskListNotFoundException if the task list is not found or does not belong to the user.
      */
-    fun getTaskListByIdAndUserId(userId: String, taskListId: String): TaskListResponseDTO
+    fun getTaskListByIdAndUserId(taskListId: String, userId: String): TaskListResponseDTO
 
     /**
      * Updates an existing task list for a specified user.

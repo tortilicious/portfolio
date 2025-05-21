@@ -18,7 +18,7 @@ interface TaskService {
      */
     fun getTaskById(userId: String, taskId: String): TaskResponseDTO
 
-    fun getTasksByTaskListId(userId: String, taskListId: String, completed: Boolean?): List<TaskResponseDTO>
+    fun getTasksByTaskListId(userId: String, taskListId: String, completed: Boolean? = null): List<TaskResponseDTO>
 
     /**
      * Updates an existing task if it belongs to the specified user.

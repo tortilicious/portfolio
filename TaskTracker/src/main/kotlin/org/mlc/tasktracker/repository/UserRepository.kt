@@ -25,6 +25,6 @@ interface UserRepository : JpaRepository<User, String> {
      * @param userName The username to check for.
      * @return True if a user with the given username exists, false otherwise.
      */
-    fun existsByUserName(userName: String): Boolean // Corregido el nombre del método
+    fun existsByUserName(userName: String): Boolean
 
 }
