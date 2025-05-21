@@ -4,6 +4,7 @@ import org.mlc.tasktracker.dto.user.UserLoginRequestDTO
 import org.mlc.tasktracker.dto.user.UserRegistrationRequestDTO
 import org.mlc.tasktracker.dto.user.UserResponseDTO
 import org.mlc.tasktracker.exception.AuthorizationException
+import org.mlc.tasktracker.exception.InvalidCredentialsException
 import org.mlc.tasktracker.exception.UserAlreadyExistException
 import org.mlc.tasktracker.exception.UserNotFoundException
 import org.mlc.tasktracker.model.User
@@ -91,9 +92,9 @@ class UserServiceImpl(
             if (passwordEncoder.matches(loginRequestDTO.password, it.password)) {
                 true
             } else {
-                throw AuthorizationException("Invalid credentials")
+                throw InvalidCredentialsException("Invalid credentials")
             }
-        } ?: throw AuthorizationException("Invalid credentials")
+        } ?: throw InvalidCredentialsException("Invalid credentials")
     }
 
     /**
@@ -169,7 +170,7 @@ class UserServiceImpl(
             ?: throw UserNotFoundException("Cant find user by id '$userId'")
 
         if (!passwordEncoder.matches(oldPassword, user.password)) {
-            throw AuthorizationException("Invalid credentials")
+            throw InvalidCredentialsException("Invalid credentials")
         }
         val newUserHashedPassword = passwordEncoder.encode(newPassword)
         user.password = newUserHashedPassword
