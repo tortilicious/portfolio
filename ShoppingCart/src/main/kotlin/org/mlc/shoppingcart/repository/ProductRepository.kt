@@ -77,4 +77,6 @@ interface ProductRepository: JpaRepository<Product, Long> {
      * @return The number of products that belong to the specified brand and have the given name.
      */
     fun countProductsByBrandAndName(brand: String, name: String): Long
+
+    fun countProductsByCategoryId(categoryId: Long): Long
 }

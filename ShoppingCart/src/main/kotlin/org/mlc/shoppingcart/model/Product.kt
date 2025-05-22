@@ -1,5 +1,6 @@
 package org.mlc.shoppingcart.model
 
+import jakarta.annotation.Nullable
 import jakarta.persistence.*
 
 
@@ -28,15 +29,16 @@ import jakarta.persistence.*
 data class Product(
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long,
+    val id: Long = 0L,  //  Placeholder for creation of Product instances. DB will assign id to every new entry.
     val name: String,
     val brand: String,
-    val description: String,
+    @Nullable
+    val description: String?,
     val price: Double,
     var inventory: Int,
 
     @OneToMany(mappedBy = "product", cascade = [CascadeType.ALL], orphanRemoval = true)
-    val images: List<Image>,
+    val images: List<Image> = mutableListOf<Image>(),
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
     @JoinColumn(name = "category_id")

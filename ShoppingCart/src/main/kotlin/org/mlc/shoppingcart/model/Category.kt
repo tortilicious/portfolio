@@ -20,9 +20,9 @@ import jakarta.persistence.*
 @Entity
 data class Category(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long,
-    val name: String,
+    val id: Long = 0L,
+    var name: String,
 
     @OneToMany(mappedBy = "category")
-    val products: List<Product>
+    val products: List<Product> = mutableListOf(),
 )
