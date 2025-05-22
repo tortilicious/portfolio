@@ -100,9 +100,9 @@ class CategoryServiceImpl(
         val categoryToUpdate = categoryRepository.findByIdOrNull(id)
             ?: throw CategoryNotFoundException("Category with id: '$id' not found for update.")
 
-        val normalizedNewName = updateRequest.name.trim().lowercase()
+        val normalizedName = updateRequest.name.trim().lowercase()
 
-        val categoryWithSameName = categoryRepository.findByName(normalizedNewName)
+        val categoryWithSameName = categoryRepository.findByName(normalizedName)
         if (categoryWithSameName != null && categoryWithSameName.id != id) {
             throw CategoryAlreadyExistException("Another category with name '${updateRequest.name}' already exists.")
         }

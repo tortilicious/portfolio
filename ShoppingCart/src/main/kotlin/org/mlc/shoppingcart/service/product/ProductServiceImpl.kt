@@ -2,6 +2,7 @@ package org.mlc.shoppingcart.service.product
 
 import CreateProductRequest
 import org.mlc.shoppingcart.dto.product.ProductResponse
+import org.mlc.shoppingcart.dto.product.UpdateProductRequest
 import org.mlc.shoppingcart.error.PoductAlreadyExistsException
 import org.mlc.shoppingcart.error.ProductNotFoundException
 import org.mlc.shoppingcart.mapper.toProductResponse
@@ -81,7 +82,6 @@ class ProductServiceImpl(
      * Returns an empty list if no products are found with the specified name.
      */
     override fun getProductsByName(name: String): List<ProductResponse> {
-        // Normalize the input name for a consistent, case-insensitive search.
         return productRepository.getProductsByName(name.trim().lowercase()).map { it.toProductResponse() }
     }
 
@@ -95,7 +95,6 @@ class ProductServiceImpl(
      * Returns an empty list if no products are found matching both criteria.
      */
     override fun getProductsByBrandAndName(brand: String, name: String): List<ProductResponse> {
-        // Normalize the input product name for a consistent, case-insensitive search.
         return productRepository.getProductsByBrandAndName(brand, name.trim().lowercase())
             .map { it.toProductResponse() }
     }
@@ -128,18 +127,18 @@ class ProductServiceImpl(
         val normalizedProductName = productRequest.name.trim().lowercase()
         val normalizedBrand = productRequest.brand.trim().lowercase()
 
-        val existingProducts = productRepository.getProductsByBrandAndName(normalizedBrand, normalizedBrand)
+        val existingProducts = productRepository.getProductsByBrandAndName(normalizedBrand, normalizedProductName)
         if (existingProducts.isNotEmpty()) {
             throw PoductAlreadyExistsException("Product with name '${productRequest.name}' and brand '${productRequest.brand}' already exists.")
         }
 
         val normalizedCategoryName = productRequest.categoryName.trim().lowercase()
-        var category: Category? = categoryRepository.findByName(normalizedCategoryName)
+        val category = categoryRepository.findByName(normalizedCategoryName)
+            ?: run {
+                val newCategory = Category(name = productRequest.categoryName.trim().lowercase())
+                categoryRepository.save(newCategory)
+            }
 
-        if (category == null) {
-            category = Category(name = productRequest.categoryName.trim())
-            category = categoryRepository.save(category)
-        }
 
         val newProduct = Product(
             name = productRequest.name.trim(),
@@ -147,8 +146,8 @@ class ProductServiceImpl(
             description = productRequest.description?.trim(),
             price = productRequest.price,
             inventory = productRequest.inventory,
-            images = mutableListOf(), // New product starts with an empty image list
-            category = category // Assign the found or newly created Category entity
+            images = mutableListOf(),
+            category = category
         )
 
         val savedProduct = productRepository.save(newProduct)
@@ -169,26 +168,50 @@ class ProductServiceImpl(
     }
 
     /**
-     * Updates the inventory quantity of a specific product.
+     * Updates an existing product with the fields provided in the request.
+     * Only non-null fields in the [UpdateProductRequest] will be applied to the entity.
+     * The category will be searched by name and created if it doesn't exist.
      *
-     * @param productId The ID of the product whose inventory is to be updated.
-     * @param newInventory The new inventory quantity.
-     * @return The updated [Product] entity.
-     * @throws ProductNotFoundException if no product with the specified ID exists.
-     * @throws IllegalArgumentException if `newInventory` is negative.
+     * @param id The ID of the product to update.
+     * @param updateRequest The [UpdateProductRequest] with the fields to modify.
+     * @return The [ProductResponse] of the updated product.
+     * @throws ProductNotFoundException if the product does not exist.
+     * @throws IllegalArgumentException if any invalid field is provided (e.g., negative inventory).
      */
     @Transactional
-    override fun updateProductInventory(productId: Long, newInventory: Int): Product {
-        val product = productRepository.getProductById(productId)
-            ?: throw ProductNotFoundException("Product with id '$productId' does not exist for inventory update.")
+    override fun updateProduct(id: Long, updateRequest: UpdateProductRequest): ProductResponse {
 
-        if (newInventory < 0) {
-            throw IllegalArgumentException("Inventory cannot be negative. Provided: $newInventory")
+        val productToUpdate = productRepository.getProductById(id)
+            ?: throw ProductNotFoundException("Product with id '$id' does not exist.")
+
+        updateRequest.name?.let { productToUpdate.name = it.trim() }
+        updateRequest.brand?.let { productToUpdate.brand = it.trim() }
+        updateRequest.description?.let { productToUpdate.description = it.trim() }
+        updateRequest.price?.let { productToUpdate.price = it }
+
+        updateRequest.inventory?.let { newInventory ->
+            if (newInventory < 0) {
+                throw IllegalArgumentException("Inventory cannot be negative.")
+            }
+            productToUpdate.inventory = newInventory
         }
 
-        product.inventory = newInventory
-        return productRepository.save(product)
+        updateRequest.categoryName?.let { categoryNameFromRequest ->
+            val normalizedCategoryName = categoryNameFromRequest.trim().lowercase()
+
+            val categoryToAssign = categoryRepository.findByName(normalizedCategoryName)
+                ?: run {
+                    val newCategory = Category(name = categoryNameFromRequest.trim())
+                    categoryRepository.save(newCategory)
+                }
+
+            productToUpdate.category = categoryToAssign
+        }
+
+        val updatedProduct = productRepository.save(productToUpdate)
+        return updatedProduct.toProductResponse()
     }
+
 
     /**
      * Searches for products based on a general search term that can match product name or description.
@@ -199,8 +222,6 @@ class ProductServiceImpl(
      * Returns an empty list if no products are found matching the criteria.
      */
     override fun searchProducts(searchTerm: String): List<ProductResponse> {
-        // This method would typically involve custom queries in the repository
-        // or combining results from multiple repository methods (e.g., byName, byDescription).
         return emptyList()
     }
 }

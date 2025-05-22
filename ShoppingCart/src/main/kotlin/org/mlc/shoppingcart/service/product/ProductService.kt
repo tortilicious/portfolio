@@ -2,6 +2,7 @@ package org.mlc.shoppingcart.service.product
 
 import CreateProductRequest
 import org.mlc.shoppingcart.dto.product.ProductResponse
+import org.mlc.shoppingcart.dto.product.UpdateProductRequest
 import org.mlc.shoppingcart.model.Product
 
 /**
@@ -106,7 +107,7 @@ interface ProductService {
      * @throws NoSuchElementException if no product with the specified ID exists.
      * @throws IllegalArgumentException if `newInventory` is negative.
      */
-    fun updateProductInventory(productId: Long, newInventory: Int): Product
+    fun updateProduct(id: Long, updateRequest: UpdateProductRequest): ProductResponse
 
     /**
      * Searches for products based on a general search term that can match product name or description.

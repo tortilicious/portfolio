@@ -30,11 +30,11 @@ data class Product(
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0L,  //  Placeholder for creation of Product instances. DB will assign id to every new entry.
-    val name: String,
-    val brand: String,
+    var name: String,
+    var brand: String,
     @Nullable
-    val description: String?,
-    val price: Double,
+    var description: String?,
+    var price: Double,
     var inventory: Int,
 
     @OneToMany(mappedBy = "product", cascade = [CascadeType.ALL], orphanRemoval = true)
@@ -42,5 +42,5 @@ data class Product(
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
     @JoinColumn(name = "category_id")
-    val category: Category,
+    var category: Category,
 )
