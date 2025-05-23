@@ -221,7 +221,7 @@ class ProductServiceImpl(
      * @return A [List] of [ProductResponse] objects that match the search term.
      * Returns an empty list if no products are found matching the criteria.
      */
-    override fun searchProducts(searchTerm: String): List<ProductResponse> {
-        return emptyList()
+    override fun getAllProducts(): List<ProductResponse> {
+        return productRepository.findAll().map { it.toProductResponse() }
     }
 }

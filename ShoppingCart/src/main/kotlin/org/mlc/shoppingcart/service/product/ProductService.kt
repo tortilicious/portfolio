@@ -116,6 +116,6 @@ interface ProductService {
      * @return A [List] of [Product] objects that match the search term.
      * Returns an empty list if no products are found matching the criteria.
      */
-    fun searchProducts(searchTerm: String): List<ProductResponse>
+    fun getAllProducts(): List<ProductResponse>
 
 }
