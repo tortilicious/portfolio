@@ -82,11 +82,11 @@ interface ProductService {
      * Saves a new product to the database.
      *
      * This method is intended only for creating *new* products.
-     * If a product with the same ID already exists in the database, a [org.mlc.shoppingcart.error.PoductAlreadyExistsException] is thrown.
+     * If a product with the same ID already exists in the database, a [org.mlc.shoppingcart.error.ProductAlreadyExistsException] is thrown.
      *
      * @param product The [Product] object to be saved.
      * @return The newly saved [Product] entity, potentially with an updated ID from the database.
-     * @throws org.mlc.shoppingcart.error.PoductAlreadyExistsException if a product with the same ID already exists.
+     * @throws org.mlc.shoppingcart.error.ProductAlreadyExistsException if a product with the same ID already exists.
      */
     fun saveProduct(productRequest: CreateProductRequest): ProductResponse
 

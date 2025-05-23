@@ -3,7 +3,7 @@ package org.mlc.shoppingcart.service.product
 import CreateProductRequest
 import org.mlc.shoppingcart.dto.product.ProductResponse
 import org.mlc.shoppingcart.dto.product.UpdateProductRequest
-import org.mlc.shoppingcart.error.PoductAlreadyExistsException
+import org.mlc.shoppingcart.error.ProductAlreadyExistsException
 import org.mlc.shoppingcart.error.ProductNotFoundException
 import org.mlc.shoppingcart.mapper.toProductResponse
 import org.mlc.shoppingcart.model.Category
@@ -120,7 +120,7 @@ class ProductServiceImpl(
      *
      * @param productRequest The [CreateProductRequest] containing the details for the new product.
      * @return The newly created [ProductResponse] with its generated ID and associated category.
-     * @throws PoductAlreadyExistsException if a product with the same name and brand already exists.
+     * @throws ProductAlreadyExistsException if a product with the same name and brand already exists.
      */
     @Transactional
     override fun saveProduct(productRequest: CreateProductRequest): ProductResponse {
@@ -129,7 +129,7 @@ class ProductServiceImpl(
 
         val existingProducts = productRepository.getProductsByBrandAndName(normalizedBrand, normalizedProductName)
         if (existingProducts.isNotEmpty()) {
-            throw PoductAlreadyExistsException("Product with name '${productRequest.name}' and brand '${productRequest.brand}' already exists.")
+            throw ProductAlreadyExistsException("Product with name '${productRequest.name}' and brand '${productRequest.brand}' already exists.")
         }
 
         val normalizedCategoryName = productRequest.categoryName.trim().lowercase()

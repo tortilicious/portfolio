@@ -3,7 +3,7 @@ package org.mlc.shoppingcart.service.category
 import org.mlc.shoppingcart.dto.category.CategoryResponse
 import org.mlc.shoppingcart.dto.category.CreateCategoryRequest
 import org.mlc.shoppingcart.dto.category.UpdateCategoryRequest
-import org.mlc.shoppingcart.error.CategoryAlreadyExistException
+import org.mlc.shoppingcart.error.CategoryAlreadyExistsException
 
 import org.mlc.shoppingcart.error.CategoryNotFoundException
 import org.mlc.shoppingcart.mapper.toCategoryResponse
@@ -75,7 +75,7 @@ class CategoryServiceImpl(
         val normalizedName = createRequest.name.trim().lowercase()
 
         if (categoryRepository.existsByName(normalizedName)) {
-            throw CategoryAlreadyExistException("Category with name: '${createRequest.name}' already exists.")
+            throw CategoryAlreadyExistsException("Category with name: '${createRequest.name}' already exists.")
         }
 
         val category = Category(
@@ -104,7 +104,7 @@ class CategoryServiceImpl(
 
         val categoryWithSameName = categoryRepository.findByName(normalizedName)
         if (categoryWithSameName != null && categoryWithSameName.id != id) {
-            throw CategoryAlreadyExistException("Another category with name '${updateRequest.name}' already exists.")
+            throw CategoryAlreadyExistsException("Another category with name '${updateRequest.name}' already exists.")
         }
 
         categoryToUpdate.name = updateRequest.name.trim()

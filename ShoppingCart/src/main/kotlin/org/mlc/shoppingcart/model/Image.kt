@@ -23,15 +23,15 @@ import java.sql.Blob
 data class Image(
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long,
-    val fileName: String,
-    val fileType: String,
+    val id: Long = 0L,
+    var fileName: String,
+    var fileType: String,
 
     @Lob
-    val image: Blob,
-    val downloadUrl: String,
+    var image: Blob,
+    var downloadUrl: String?,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
-    val product: Product
+    var product: Product
 )
