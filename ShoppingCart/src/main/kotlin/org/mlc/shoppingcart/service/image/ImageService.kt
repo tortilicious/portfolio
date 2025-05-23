@@ -2,6 +2,7 @@ package org.mlc.shoppingcart.service.image
 
 import org.mlc.shoppingcart.dto.image.ImageResponse
 import org.springframework.web.multipart.MultipartFile
+import java.sql.Blob
 
 /**
  * Interface for the image service layer.
@@ -50,4 +51,6 @@ interface ImageService {
      * @throws org.mlc.shoppingcart.error.ImageProcessingException if an error occurs during image processing or storage.
      */
     fun updateImage(file: MultipartFile, imageId: Long): ImageResponse
+
+    fun getImageDataById(id: Long): ByteArray
 }

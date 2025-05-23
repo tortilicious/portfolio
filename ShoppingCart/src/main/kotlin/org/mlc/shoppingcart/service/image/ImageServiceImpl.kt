@@ -1,11 +1,10 @@
 package org.mlc.shoppingcart.service.image
 
-import org.hibernate.engine.jdbc.BlobProxy
 import org.mlc.shoppingcart.dto.image.ImageResponse
+import org.mlc.shoppingcart.mapper.*
 import org.mlc.shoppingcart.error.ImageNotFoundException
 import org.mlc.shoppingcart.error.ImageProcessingException
 import org.mlc.shoppingcart.error.ProductNotFoundException
-import org.mlc.shoppingcart.mapper.toImageResponse
 import org.mlc.shoppingcart.model.Image
 import org.mlc.shoppingcart.repository.ImageRepository
 import org.mlc.shoppingcart.repository.ProductRepository
@@ -14,13 +13,6 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
 import java.io.IOException
 
-
-/**
- * Service implementation for managing [Image] entities.
- *
- * This class handles the business logic for image operations, including
- * saving, retrieving, updating, and deleting images, as well as associating them with products.
- */
 @Service
 class ImageServiceImpl(
     private val imageRepository: ImageRepository,
@@ -35,10 +27,9 @@ class ImageServiceImpl(
      * @throws ImageNotFoundException if no image with the specified ID exists.
      */
     override fun getImageById(id: Long): ImageResponse {
-        val image =
-            imageRepository.findImageByIdOrNull(id) ?: throw ImageNotFoundException("Image with id '$id' not found")
-        val response = image.toImageResponse()
-        return response
+        val image = imageRepository.findImageByIdOrNull(id)
+            ?: throw ImageNotFoundException("Image with id '$id' not found.")
+        return image.toImageResponse()
     }
 
     /**
@@ -49,8 +40,8 @@ class ImageServiceImpl(
      */
     @Transactional
     override fun deleteImageById(id: Long) {
-        val image =
-            imageRepository.findImageByIdOrNull(id) ?: throw ImageNotFoundException("Image with id '$id' not found")
+        val image = imageRepository.findImageByIdOrNull(id)
+            ?: throw ImageNotFoundException("Image with id '$id' not found.")
         imageRepository.delete(image)
     }
 
@@ -87,7 +78,7 @@ class ImageServiceImpl(
                 val image = Image(
                     fileName = file.originalFilename!!,
                     fileType = file.contentType ?: "application/octet-stream",
-                    image = BlobProxy.generateProxy(file.bytes),
+                    image = file.bytes, // Asignación directa de ByteArray
                     product = product,
                     downloadUrl = null
                 )
@@ -100,9 +91,10 @@ class ImageServiceImpl(
 
                 savedImageResponses.add(finalSavedImage.toImageResponse())
 
-
             } catch (e: IOException) {
-                throw ImageProcessingException("Failed to read image data from file '${file.originalFilename}': ${e.message}")
+                throw ImageProcessingException(
+                    "Failed to read image data from file '${file.originalFilename}': ${e.message}"
+                )
             } catch (e: Exception) {
                 throw ImageProcessingException("Failed to save image '${file.originalFilename}': ${e.message}")
             }
@@ -124,24 +116,48 @@ class ImageServiceImpl(
      */
     @Transactional
     override fun updateImage(file: MultipartFile, imageId: Long): ImageResponse {
-        val image = imageRepository.findImageByIdOrNull(imageId)
-            ?: throw ImageNotFoundException("Image with id '$imageId' not found f or update")
-        if (file.isEmpty) throw IllegalArgumentException("Image with id '$imageId' must not be empty")
+        val imageToUpdate = imageRepository.findImageByIdOrNull(imageId)
+            ?: throw ImageNotFoundException("Image with id '$imageId' not found for update.")
 
-        try {
-            image.fileName =
-                file.originalFilename ?: throw IllegalArgumentException("Image with id '$imageId' must not be empty")
-            image.fileType = file.contentType ?: "application/octet-stream"
-            image.image = BlobProxy.generateProxy((file.bytes))
-
-            val updatedImage = imageRepository.save(image)
-            return updatedImage.toImageResponse()
-
-        } catch (e: Exception) {
-            throw ImageProcessingException("Failed to read new image data from file: ${e.message}")
-        } catch (e: IOException) {
-            throw ImageProcessingException("Failed to update image: ${e.message}")
+        if (file.isEmpty) {
+            throw IllegalArgumentException("Cannot update with an empty file.")
+        }
+        if (file.originalFilename.isNullOrBlank()) {
+            throw IllegalArgumentException("File name is missing or empty for update.")
         }
 
+        try {
+            imageToUpdate.fileName = file.originalFilename!!
+            imageToUpdate.fileType = file.contentType ?: "application/octet-stream"
+            imageToUpdate.image = file.bytes
+            imageToUpdate.downloadUrl = "/api/v1/images/${imageToUpdate.id}/download"
+
+            val updatedImage = imageRepository.save(imageToUpdate)
+            return updatedImage.toImageResponse()
+
+        } catch (e: IOException) {
+            throw ImageProcessingException("Failed to read new image data from file: ${e.message}")
+        } catch (e: Exception) {
+            throw ImageProcessingException("Failed to update image: ${e.message}")
+        }
+    }
+
+    /**
+     * Retrieves the binary data of an image by its unique identifier.
+     *
+     * @param id The unique ID of the image to retrieve.
+     * @return A [ByteArray] containing the binary image data.
+     * @throws ImageNotFoundException if no image with the specified ID exists.
+     * @throws ImageProcessingException if an error occurs while reading the image data.
+     */
+    override fun getImageDataById(id: Long): ByteArray {
+        val image = imageRepository.findImageByIdOrNull(id)
+            ?: throw ImageNotFoundException("Image with id '$id' not found.")
+
+        try {
+            return image.image
+        } catch (e: Exception) {
+            throw ImageProcessingException("Failed to retrieve image data for image with id '$id': ${e.message}")
+        }
     }
 }

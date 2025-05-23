@@ -28,10 +28,23 @@ data class Image(
     var fileType: String,
 
     @Lob
-    var image: Blob,
+    var image: ByteArray,
     var downloadUrl: String?,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     var product: Product
-)
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Image
+
+        return id == other.id
+    }
+
+    override fun hashCode(): Int {
+        return id.hashCode()
+    }
+}

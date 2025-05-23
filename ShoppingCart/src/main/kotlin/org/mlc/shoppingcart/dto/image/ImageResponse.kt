@@ -16,6 +16,6 @@ data class ImageResponse(
     val id: Long,
     val fileName: String,
     val fileType: String,
-    val downloadUrl: String?, // Often, downloadUrl is generated dynamically or stored if using external storage
-    val productId: Long // To indicate which product this image belongs to
+    val downloadUrl: String?,
+    val productId: Long
 )
