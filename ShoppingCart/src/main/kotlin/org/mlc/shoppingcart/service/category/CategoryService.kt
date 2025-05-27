@@ -4,6 +4,7 @@ import org.mlc.shoppingcart.dto.category.CategoryResponse
 import org.mlc.shoppingcart.dto.category.CreateCategoryRequest
 import org.mlc.shoppingcart.dto.category.UpdateCategoryRequest
 
+
 /**
  * Interface for the category service layer.
  * Defines the business operations available for managing product categories.

@@ -27,7 +27,7 @@ class ImageServiceImpl(
      * @throws ImageNotFoundException if no image with the specified ID exists.
      */
     override fun getImageById(id: Long): ImageResponse {
-        val image = imageRepository.findImageByIdOrNull(id)
+        val image = imageRepository.getImageById(id)
             ?: throw ImageNotFoundException("Image with id '$id' not found.")
         return image.toImageResponse()
     }
@@ -40,7 +40,7 @@ class ImageServiceImpl(
      */
     @Transactional
     override fun deleteImageById(id: Long) {
-        val image = imageRepository.findImageByIdOrNull(id)
+        val image = imageRepository.getImageById(id)
             ?: throw ImageNotFoundException("Image with id '$id' not found.")
         imageRepository.delete(image)
     }
@@ -116,7 +116,7 @@ class ImageServiceImpl(
      */
     @Transactional
     override fun updateImage(file: MultipartFile, imageId: Long): ImageResponse {
-        val imageToUpdate = imageRepository.findImageByIdOrNull(imageId)
+        val imageToUpdate = imageRepository.getImageById(imageId)
             ?: throw ImageNotFoundException("Image with id '$imageId' not found for update.")
 
         if (file.isEmpty) {
@@ -151,7 +151,7 @@ class ImageServiceImpl(
      * @throws ImageProcessingException if an error occurs while reading the image data.
      */
     override fun getImageDataById(id: Long): ByteArray {
-        val image = imageRepository.findImageByIdOrNull(id)
+        val image = imageRepository.getImageById(id)
             ?: throw ImageNotFoundException("Image with id '$id' not found.")
 
         try {

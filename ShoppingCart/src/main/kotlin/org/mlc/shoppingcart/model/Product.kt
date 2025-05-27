@@ -29,7 +29,7 @@ import jakarta.persistence.*
 data class Product(
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long = 0L,  //  Placeholder for creation of Product instances. DB will assign id to every new entry.
+    val id: Long = 0L,
     var name: String,
     var brand: String,
     @Nullable
@@ -38,7 +38,7 @@ data class Product(
     var inventory: Int,
 
     @OneToMany(mappedBy = "product", cascade = [CascadeType.ALL], orphanRemoval = true)
-    val images: List<Image> = mutableListOf<Image>(),
+    val images: List<Image> = mutableListOf(),
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
     @JoinColumn(name = "category_id")

@@ -15,7 +15,7 @@ data class CreateProductRequest(
     val price: Double,
     @field:Min(0, message = "Inventory cannot be negative")
     val inventory: Int,
-    val iamges: List<Image>,
+    val images: List<Image>?,
     @field:NotNull(message = "Category name is required")
     val categoryName: String
 )

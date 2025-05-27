@@ -34,7 +34,7 @@ class CategoryServiceImpl(
      * @throws CategoryNotFoundException if no category with the specified ID exists.
      */
     override fun findCategoryById(id: Long): CategoryResponse {
-        return categoryRepository.findByIdOrNull(id)
+        return categoryRepository.getCategoryById(id)
             ?.toCategoryResponse()
             ?: throw CategoryNotFoundException("Category with id: '$id' not found.")
     }
@@ -97,7 +97,7 @@ class CategoryServiceImpl(
      */
     @Transactional
     override fun updateCategory(id: Long, updateRequest: UpdateCategoryRequest): CategoryResponse {
-        val categoryToUpdate = categoryRepository.findByIdOrNull(id)
+        val categoryToUpdate = categoryRepository.getCategoryById(id)
             ?: throw CategoryNotFoundException("Category with id: '$id' not found for update.")
 
         val normalizedName = updateRequest.name.trim().lowercase()
@@ -122,7 +122,7 @@ class CategoryServiceImpl(
      */
     @Transactional
     override fun deleteCategory(id: Long) {
-        val categoryToDelete = categoryRepository.findByIdOrNull(id)
+        val categoryToDelete = categoryRepository.getCategoryById(id)
             ?: throw CategoryNotFoundException("Category with id: '$id' not found and cannot be deleted.")
 
         if (productRepository.countProductsByCategoryId(id) > 0) {

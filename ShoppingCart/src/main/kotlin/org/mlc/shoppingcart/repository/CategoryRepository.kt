@@ -2,12 +2,13 @@
 package org.mlc.shoppingcart.repository
 
 import org.mlc.shoppingcart.model.Category
+import org.mlc.shoppingcart.model.Product
 import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.stereotype.Repository // Add @Repository import
+import org.springframework.stereotype.Repository
 
 @Repository
 interface CategoryRepository: JpaRepository<Category, Long> {
-    fun findByIdOrNull(id: Long): Category?
+    fun getCategoryById(id: Long): Category?
     fun findByName(name: String): Category?
     fun existsByName(name: String): Boolean
 }
