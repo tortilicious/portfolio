@@ -1,11 +1,11 @@
 package org.mlc.shoppingcart.mapper
 
+import org.mlc.shoppingcart.dto.cart.CartResponse
+import org.mlc.shoppingcart.dto.cart_item.CartItemResponse
 import org.mlc.shoppingcart.dto.category.CategoryResponse
 import org.mlc.shoppingcart.dto.image.ImageResponse
 import org.mlc.shoppingcart.dto.product.ProductResponse
-import org.mlc.shoppingcart.model.Category
-import org.mlc.shoppingcart.model.Image
-import org.mlc.shoppingcart.model.Product
+import org.mlc.shoppingcart.model.*
 
 fun Product.toProductResponse(): ProductResponse {
     return ProductResponse(
@@ -35,5 +35,23 @@ fun Image.toImageResponse(): ImageResponse {
         fileType = fileType,
         downloadUrl = downloadUrl,
         productId = product.id
+    )
+}
+
+fun Cart.toCartResponse(): CartResponse {
+    return CartResponse(
+        id = id,
+        totalAmount = totalAmount,
+        cartItems = cartItems.map { it.toCartItemResponse() }
+    )
+}
+
+fun CartItem.toCartItemResponse(): CartItemResponse {
+    return CartItemResponse(
+        id = id,
+        productName = product.name,
+        quantity = quantity,
+        unitPrice = unitPrice,
+        totalPrice = totalPrice
     )
 }

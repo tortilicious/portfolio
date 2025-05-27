@@ -23,7 +23,11 @@ class GlobalExceptionHandler {
      * @return A [ResponseEntity] containing an [ErrorResponse] and HTTP status 404.
      */
     @ExceptionHandler(
-        ProductNotFoundException::class, ImageNotFoundException::class, CategoryNotFoundException::class
+        ProductNotFoundException::class,
+        ImageNotFoundException::class,
+        CategoryNotFoundException::class,
+        CartNotFoundException::class,
+        CartItemNotFoundException::class,
     )
     fun onNotFoundException(e: RuntimeException): ResponseEntity<ErrorResponse> {
         val error = ErrorResponse(

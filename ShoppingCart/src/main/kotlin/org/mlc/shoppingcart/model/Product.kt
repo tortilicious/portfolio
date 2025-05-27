@@ -2,6 +2,7 @@ package org.mlc.shoppingcart.model
 
 import jakarta.annotation.Nullable
 import jakarta.persistence.*
+import java.math.BigDecimal
 
 
 /**
@@ -34,13 +35,17 @@ data class Product(
     var brand: String,
     @Nullable
     var description: String?,
-    var price: Double,
+
+    @Column(precision = 10, scale = 2)
+    var price: BigDecimal,
+
     var inventory: Int,
 
     @OneToMany(mappedBy = "product", cascade = [CascadeType.ALL], orphanRemoval = true)
     val images: List<Image> = mutableListOf(),
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     var category: Category,
 )
+
