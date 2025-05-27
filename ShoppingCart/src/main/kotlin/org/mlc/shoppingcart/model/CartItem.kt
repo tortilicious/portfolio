@@ -18,27 +18,27 @@ data class CartItem(
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long = 0L, // Default value 0L for new entities before DB generates ID
+    var id: Long = 0L,
 
     /**
      * The product associated with this cart item.
      * This is a many-to-one relationship, meaning multiple cart items can refer to the same product.
      */
     @ManyToOne
-    @JoinColumn(name = "product_id", nullable = false) // Links to the product table; product is mandatory
+    @JoinColumn(name = "product_id", nullable = false)
     val product: Product,
 
     /**
      * The quantity of the product in this cart item.
      */
-    @Column(nullable = false) // Quantity is mandatory
+    @Column(nullable = false)
     var quantity: Int,
 
     /**
      * The unit price of the product at the time it was added to the cart.
      * Stored with 10 digits of precision and 2 decimal places for accurate financial calculations.
      */
-    @Column(name = "unit_price", precision = 10, scale = 2, nullable = false) // Unit price is mandatory
+    @Column(name = "unit_price", precision = 10, scale = 2, nullable = false)
     var unitPrice: BigDecimal,
 
     /**
@@ -46,15 +46,15 @@ data class CartItem(
      * Stored with 10 digits of precision and 2 decimal places. This value is recalculated
      * when quantity or unitPrice changes.
      */
-    @Column(name = "total_price", precision = 10, scale = 2, nullable = false) // Total price is mandatory
-    var totalPrice: BigDecimal = BigDecimal.ZERO, // Default to zero, will be calculated later
+    @Column(name = "total_price", precision = 10, scale = 2, nullable = false)
+    var totalPrice: BigDecimal = BigDecimal.ZERO,
 
     /**
      * The shopping cart to which this item belongs.
      * This is a many-to-one relationship, linking the item back to its parent cart.
      */
     @ManyToOne
-    @JoinColumn(name = "cart_id", nullable = false) // Links to the cart table; cart is mandatory
+    @JoinColumn(name = "cart_id", nullable = false)
     val cart: Cart
 )
 

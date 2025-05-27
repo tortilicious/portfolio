@@ -3,6 +3,7 @@ import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Positive
 import org.mlc.shoppingcart.model.Image
+import java.math.BigDecimal
 
 // Request DTO for creating a product
 data class CreateProductRequest(
@@ -12,7 +13,7 @@ data class CreateProductRequest(
     val brand: String,
     val description: String?,
     @field:Positive(message = "Price must be positive")
-    val price: Double,
+    val price: BigDecimal,
     @field:Min(0, message = "Inventory cannot be negative")
     val inventory: Int,
     val images: List<Image>?,
