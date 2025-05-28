@@ -10,7 +10,7 @@ import java.math.RoundingMode // Required for setScale in updateTotalPrice()
  */
 @Entity
 @Table(name = "cart_items")
-data class CartItem(
+class CartItem(
 
     /**
      * The unique identifier for the cart item.
@@ -24,7 +24,7 @@ data class CartItem(
      * The product associated with this cart item.
      * This is a many-to-one relationship, meaning multiple cart items can refer to the same product.
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "product_id", nullable = false)
     val product: Product,
 

@@ -27,7 +27,7 @@ import java.math.BigDecimal
  * and changes to the category (e.g., saving a new category) will cascade.
  */
 @Entity
-data class Product(
+class Product(
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0L,

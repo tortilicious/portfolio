@@ -94,7 +94,7 @@ class CartController(
     fun updateCartItem(
         @PathVariable("cartId") cartId: Long,
         @PathVariable("productId") productId: Long,
-        @Valid @RequestBody request: UpdateCartItemRequest // @Valid triggers validation on the DTO
+        @Valid @RequestBody request: UpdateCartItemRequest
     ): ResponseEntity<CartResponse> {
         val updatedCart = cartService.updateProductQuantity(
             cartId = cartId,

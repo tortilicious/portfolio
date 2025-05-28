@@ -20,7 +20,7 @@ import java.sql.Blob
  * meaning many images can be associated with one product. The fetching strategy is lazy.
  */
 @Entity
-data class Image(
+class Image(
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0L,
