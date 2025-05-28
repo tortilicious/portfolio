@@ -1,6 +1,7 @@
 package org.mlc.shoppingcart.model
 
 import jakarta.persistence.*
+import org.hibernate.annotations.NaturalId
 
 
 /**
@@ -23,15 +24,24 @@ data class User(
      * The user's email address, used for login and unique identification.
      * This field cannot be null.
      */
+    @NaturalId
     @Column(nullable = false)
-    val email: String,
+    var email: String,
 
     /**
      * The user's password, which should be stored as a hashed value for security.
      * This field cannot be null.
      */
     @Column(nullable = false)
-    val password: String, // Note: In a real application, this should be a hashed password.
+    var password: String,
+
+    @Column(name = "first_name", nullable = false)
+    var firstName: String,
+
+    @Column(name = "last_name", nullable = false)
+    var lastName: String,
+
+
 
     /**
      * The one-to-one relationship with the user's shopping [Cart].
@@ -41,7 +51,7 @@ data class User(
      * means if a cart is disassociated from a user, it will be deleted.
      */
     @OneToOne(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
-    val cart: Cart,
+    var cart: Cart? = null,
 
     /**
      * A mutable set of [Order]s placed by this user.

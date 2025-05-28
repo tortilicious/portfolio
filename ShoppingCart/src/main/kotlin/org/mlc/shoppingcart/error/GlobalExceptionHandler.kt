@@ -28,6 +28,7 @@ class GlobalExceptionHandler {
         CategoryNotFoundException::class,
         CartNotFoundException::class,
         CartItemNotFoundException::class,
+        UserNotFoundException::class
     )
     fun onNotFoundException(e: RuntimeException): ResponseEntity<ErrorResponse> {
         val error = ErrorResponse(
@@ -61,7 +62,11 @@ class GlobalExceptionHandler {
      * @param ex The caught [RuntimeException].
      * @return A [ResponseEntity] containing an [ErrorResponse] and HTTP status 409.
      */
-    @ExceptionHandler(ProductAlreadyExistsException::class, CategoryAlreadyExistsException::class)
+    @ExceptionHandler(
+        ProductAlreadyExistsException::class,
+        CategoryAlreadyExistsException::class,
+        UserAlreadyExistsException::class,
+    )
     fun handleAlreadyExistsException(ex: RuntimeException): ResponseEntity<ErrorResponse> {
         val errorResponse = ErrorResponse(
             status = HttpStatus.CONFLICT.value(),
@@ -111,7 +116,7 @@ class GlobalExceptionHandler {
      * @param ex The caught [MethodArgumentNotValidException].
      * @return A [ResponseEntity] containing an [ErrorResponse] and HTTP status 400.
      */
-    @ExceptionHandler(MethodArgumentNotValidException::class)
+    @ExceptionHandler(MethodArgumentNotValidException::class, InvalidCredentialsException::class)
     fun handleValidationExceptions(ex: MethodArgumentNotValidException): ResponseEntity<ErrorResponse> {
         val errors = ex.bindingResult.fieldErrors.map { "${it.field}: ${it.defaultMessage}" }
         val errorResponse = ErrorResponse(

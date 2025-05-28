@@ -1,5 +1,6 @@
 package org.mlc.shoppingcart.mapper
 
+import org.mlc.shoppingcart.dto.user.UserResponse
 import org.mlc.shoppingcart.dto.cart.CartResponse
 import org.mlc.shoppingcart.dto.cart_item.CartItemResponse
 import org.mlc.shoppingcart.dto.category.CategoryResponse
@@ -53,5 +54,12 @@ fun CartItem.toCartItemResponse(): CartItemResponse {
         quantity = quantity,
         unitPrice = unitPrice,
         totalPrice = totalPrice
+    )
+}
+
+fun User.toUserResponse(): UserResponse {
+    return UserResponse(
+        id = id,
+        email = email
     )
 }
