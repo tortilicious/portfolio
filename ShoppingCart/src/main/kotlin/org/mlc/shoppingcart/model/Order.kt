@@ -28,6 +28,15 @@ data class Order(
     val id: Long = 0L,
 
     /**
+     * The [User] who placed this order. This is a many-to-one relationship.
+     * `@JoinColumn(name = "user_id")` specifies the foreign key column in the orders table.
+     * No cascade type is specified as the lifecycle of a User should be independent of an Order.
+     */
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    val user: User,
+
+    /**
      * The exact date and time when the order was placed.
      * Defaults to the current instant at the time of object creation, ensuring timezone-agnostic storage.
      */

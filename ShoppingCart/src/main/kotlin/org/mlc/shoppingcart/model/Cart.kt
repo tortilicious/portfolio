@@ -7,6 +7,7 @@ import java.math.RoundingMode
 /**
  * Represents a shopping cart in the e-commerce system.
  * A cart holds a collection of [CartItem]s and maintains a calculated total amount.
+ * It is uniquely associated with a [User].
  */
 @Entity
 class Cart(
@@ -27,11 +28,25 @@ class Cart(
     var totalAmount: BigDecimal = BigDecimal.ZERO,
 
     /**
+     * The [User] to whom this cart belongs. This is a one-to-one relationship.
+     * `@JoinColumn(name = "user_id")` specifies the foreign key column in the carts table.
+     */
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    val user: User,
+
+    /**
      * A mutable set of [CartItem]s belonging to this cart.
      * This is a one-to-many relationship, meaning one cart can have multiple items.
-     * [CascadeType.ALL] ensures that operations like saving or deleting a cart
-     * will also affect its associated items. [orphanRemoval = true] ensures that
-     * if a CartItem is removed from this set, it's also deleted from the database.
+     *
+     * - `mappedBy = "cart"`: Indicates that the `cart` field in the [CartItem] entity
+     * is the owning side of this bidirectional relationship and is responsible for managing the foreign key.
+     * - `cascade = [CascadeType.ALL]`: Ensures that operations like saving or deleting a cart
+     * will also affect its associated items.
+     * - `orphanRemoval = true`: Ensures that if a CartItem is removed from this set,
+     * it's also deleted from the database, as it cannot exist without its parent cart.
+     * - `fetch = FetchType.EAGER`: Specifies that the collection of [CartItem]s should be loaded
+     * immediately with the cart. This is often suitable for carts as their items are usually needed.
      */
     @OneToMany(mappedBy = "cart", cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.EAGER)
     var cartItems: MutableSet<CartItem> = mutableSetOf(),
