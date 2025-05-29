@@ -54,4 +54,6 @@ interface OrderService {
      * @throws OrderNotFoundException If no order with the given ID is found.
      */
     fun deleteOrderById(orderId: Long)
+
+    fun getAllOrdersByUserId(userId: Long): MutableSet<OrderResponse>
 }

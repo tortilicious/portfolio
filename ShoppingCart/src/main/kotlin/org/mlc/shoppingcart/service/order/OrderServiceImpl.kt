@@ -154,4 +154,13 @@ class OrderServiceImpl(
 
         orderRepository.delete(order)
     }
+
+    @Transactional(readOnly = true)
+    override fun getAllOrdersByUserId(userId: Long): MutableSet<OrderResponse> {
+        val user = userRepository.findByIdOrNull(userId)
+            ?: throw UserNotFoundException("User not found.")
+
+        val orders = user.orders
+        return orders.map { it.toOrderResponse() }.toMutableSet()
+    }
 }
