@@ -2,6 +2,7 @@ package org.mlc.shoppingcart.model
 
 import jakarta.persistence.*
 import org.hibernate.annotations.NaturalId
+import org.mlc.shoppingcart.utils.UserRole
 
 
 /**
@@ -25,7 +26,7 @@ data class User(
      * This field cannot be null.
      */
     @NaturalId
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     var email: String,
 
     /**
@@ -41,6 +42,9 @@ data class User(
     @Column(name = "last_name", nullable = false)
     var lastName: String,
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    var role: UserRole = UserRole.USER,
 
 
     /**
