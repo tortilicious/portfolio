@@ -21,17 +21,6 @@ class CartController(
 
 ) {
 
-    /**
-     * Creates a new, empty shopping cart.
-     *
-     * @return A [ResponseEntity] containing the [CartResponse] for the newly created cart
-     * and HTTP status 201 (Created).
-     */
-    @PostMapping
-    fun createCart(): ResponseEntity<CartResponse> {
-        val newCart = cartService.createCart()
-        return ResponseEntity(newCart, HttpStatus.CREATED)
-    }
 
     /**
      * Retrieves a shopping cart by its unique ID.

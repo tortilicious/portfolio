@@ -4,12 +4,15 @@ import org.mlc.shoppingcart.dto.cart.CartResponse
 import org.mlc.shoppingcart.error.CartItemNotFoundException
 import org.mlc.shoppingcart.error.CartNotFoundException
 import org.mlc.shoppingcart.error.ProductNotFoundException
+import org.mlc.shoppingcart.error.UserNotFoundException
 import org.mlc.shoppingcart.mapper.toCartResponse
+import org.mlc.shoppingcart.model.Cart
 import org.mlc.shoppingcart.model.CartItem
 import org.mlc.shoppingcart.model.updateOverallTotalAmount
 import org.mlc.shoppingcart.model.updateTotalPrice
 import org.mlc.shoppingcart.repository.CartRepository
 import org.mlc.shoppingcart.repository.ProductRepository
+import org.mlc.shoppingcart.repository.UserRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -22,7 +25,8 @@ import java.math.BigDecimal
 @Service
 class CartServiceImp(
     private val cartRepository: CartRepository,
-    private val productRepository: ProductRepository // CartItemRepository is not directly used for common operations
+    private val productRepository: ProductRepository, // CartItemRepository is not directly used for common operations
+    private val userRepository: UserRepository
 ) : CartService {
 
     /**
@@ -70,17 +74,7 @@ class CartServiceImp(
         return cart.totalAmount
     }
 
-    /**
-     * Creates a new empty shopping cart.
-     *
-     * @return A [CartResponse] representing the newly created cart.
-     */
-    @Transactional
-    override fun createCart(): CartResponse {
-        val newCart = org.mlc.shoppingcart.model.Cart() // Create a new Cart instance
-        val savedCart = cartRepository.save(newCart) // Save the new cart to the database
-        return savedCart.toCartResponse() // Map and return the response DTO
-    }
+
 
     /**
      * Adds a specified quantity of a product to a shopping cart.

@@ -28,13 +28,12 @@ class GlobalExceptionHandler {
         CategoryNotFoundException::class,
         CartNotFoundException::class,
         CartItemNotFoundException::class,
-        UserNotFoundException::class
+        UserNotFoundException::class,
+        OrderNotFoundException::class
     )
     fun onNotFoundException(e: RuntimeException): ResponseEntity<ErrorResponse> {
         val error = ErrorResponse(
-            status = HttpStatus.NOT_FOUND.value(),
-            message = e.message,
-            error = HttpStatus.NOT_FOUND.reasonPhrase
+            status = HttpStatus.NOT_FOUND.value(), message = e.message, error = HttpStatus.NOT_FOUND.reasonPhrase
         )
         return ResponseEntity(error, HttpStatus.NOT_FOUND)
     }
@@ -45,12 +44,10 @@ class GlobalExceptionHandler {
      * @param ex The caught [IllegalArgumentException].
      * @return A [ResponseEntity] containing an [ErrorResponse] and HTTP status 400.
      */
-    @ExceptionHandler(IllegalArgumentException::class)
+    @ExceptionHandler(IllegalArgumentException::class, InsufficientStockException::class)
     fun handleBadRequestException(ex: IllegalArgumentException): ResponseEntity<ErrorResponse> {
         val errorResponse = ErrorResponse(
-            status = HttpStatus.BAD_REQUEST.value(),
-            error = HttpStatus.BAD_REQUEST.reasonPhrase,
-            message = ex.message
+            status = HttpStatus.BAD_REQUEST.value(), error = HttpStatus.BAD_REQUEST.reasonPhrase, message = ex.message
         )
         return ResponseEntity(errorResponse, HttpStatus.BAD_REQUEST)
     }
@@ -69,9 +66,7 @@ class GlobalExceptionHandler {
     )
     fun handleAlreadyExistsException(ex: RuntimeException): ResponseEntity<ErrorResponse> {
         val errorResponse = ErrorResponse(
-            status = HttpStatus.CONFLICT.value(),
-            error = HttpStatus.CONFLICT.reasonPhrase,
-            message = ex.message
+            status = HttpStatus.CONFLICT.value(), error = HttpStatus.CONFLICT.reasonPhrase, message = ex.message
         )
         return ResponseEntity(errorResponse, HttpStatus.CONFLICT)
     }
@@ -102,9 +97,7 @@ class GlobalExceptionHandler {
     @ExceptionHandler(IllegalStateException::class)
     fun handleIllegalStateException(ex: IllegalStateException): ResponseEntity<ErrorResponse> {
         val errorResponse = ErrorResponse(
-            status = HttpStatus.BAD_REQUEST.value(),
-            error = HttpStatus.BAD_REQUEST.reasonPhrase,
-            message = ex.message
+            status = HttpStatus.BAD_REQUEST.value(), error = HttpStatus.BAD_REQUEST.reasonPhrase, message = ex.message
         )
         return ResponseEntity(errorResponse, HttpStatus.BAD_REQUEST)
     }
@@ -120,9 +113,7 @@ class GlobalExceptionHandler {
     fun handleValidationExceptions(ex: MethodArgumentNotValidException): ResponseEntity<ErrorResponse> {
         val errors = ex.bindingResult.fieldErrors.map { "${it.field}: ${it.defaultMessage}" }
         val errorResponse = ErrorResponse(
-            status = HttpStatus.BAD_REQUEST.value(),
-            error = "Validation Error",
-            message = errors.joinToString(", ")
+            status = HttpStatus.BAD_REQUEST.value(), error = "Validation Error", message = errors.joinToString(", ")
         )
         return ResponseEntity(errorResponse, HttpStatus.BAD_REQUEST)
     }

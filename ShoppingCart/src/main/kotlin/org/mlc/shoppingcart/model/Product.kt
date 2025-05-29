@@ -18,7 +18,7 @@ import java.math.BigDecimal
  * @property brand The brand of the product.
  * @property description A detailed description of the product.
  * @property price The price of the product.
- * @property inventory The current stock quantity of the product.
+ * @property stock The current stock quantity of the product.
  * @property images A list of [Image] entities associated with this product.
  * Changes to images (e.g., adding or removing) will cascade to the database.
  * If an image is removed from this list, it will be removed from the database.
@@ -39,7 +39,7 @@ class Product(
     @Column(precision = 10, scale = 2)
     var price: BigDecimal,
 
-    var inventory: Int,
+    var stock: Int,
 
     @OneToMany(mappedBy = "product", cascade = [CascadeType.ALL], orphanRemoval = true)
     val images: List<Image> = mutableListOf(),

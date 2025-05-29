@@ -3,6 +3,7 @@ package org.mlc.shoppingcart.model
 import jakarta.persistence.*
 import org.mlc.shoppingcart.utils.OrderStatus
 import java.math.BigDecimal
+import java.math.RoundingMode
 import java.time.Instant
 
 
@@ -48,7 +49,7 @@ data class Order(
      * for better readability and maintainability of database records.
      */
     @Enumerated(EnumType.STRING)
-    val status: OrderStatus,
+    var status: OrderStatus = OrderStatus.PENDING,
 
     /**
      * The total monetary amount of the entire order.
@@ -56,7 +57,7 @@ data class Order(
      * It's stored with high precision (10 digits total, 2 decimal places) for accurate financial calculations.
      */
     @Column(name = "total_amount", precision = 10, scale = 2)
-    val totalAmount: BigDecimal,
+    var totalAmount: BigDecimal = BigDecimal.ZERO,
 
     /**
      * A mutable set of [OrderItem]s that belong to this order.
@@ -76,7 +77,7 @@ data class Order(
      * approach for `@OneToMany` relationships to prevent performance degradation and excessive memory usage.
      */
     @OneToMany(mappedBy = "order", cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.LAZY)
-    val orderItems: MutableSet<OrderItem> = mutableSetOf()
+    var orderItems: MutableSet<OrderItem> = mutableSetOf()
 ) {
     /**
      * Provides a concise string representation of the [Order] entity.
@@ -89,5 +90,14 @@ data class Order(
      */
     override fun toString(): String {
         return "Order(id=$id, date=$date, status=$status, totalAmount=$totalAmount)"
+    }
+}
+
+fun Order.calculateTotalAmount() {
+    totalAmount = orderItems.sumOf { orderItem ->
+        orderItem.unitPrice.multiply(
+            BigDecimal(orderItem.quantity)
+                .setScale(2, RoundingMode.HALF_UP)
+        )
     }
 }

@@ -62,7 +62,7 @@ data class OrderItem(
      * Stored with 10 digits of precision and 2 decimal places.
      */
     @Column(name = "total_price", precision = 10, scale = 2, nullable = false)
-    var totalPrice: BigDecimal, // 'var' is appropriate as its value might be updated internally
+    var totalPrice: BigDecimal = BigDecimal.ZERO,
 
     /**
      * The [Order] to which this item belongs.
@@ -78,7 +78,7 @@ data class OrderItem(
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = false)
-    val order: Order
+    var order: Order?
 ) {
     /**
      * Initializes the [totalPrice] property when an [OrderItem] object is created.
@@ -101,6 +101,10 @@ data class OrderItem(
         return "OrderItem(id=$id, productId=${product.id}, quantity=$quantity, unitPrice=$unitPrice, totalPrice=$totalPrice, orderId=${order.id})"
     }
 
+    init {
+        updateTotalPrice()
+    }
+
 }
 
 /**
@@ -113,7 +117,7 @@ fun OrderItem.updateTotalPrice() {
     // Corrected calculation: setScale applies to the BigDecimal(quantity) before multiplication,
     // or to the final result, but typically you want intermediate precision or final precision.
     // For simple multiplication, applying to the result is fine.
-    this.totalPrice = this.unitPrice.multiply(BigDecimal(this.quantity))
+    totalPrice = unitPrice.multiply(BigDecimal(quantity))
         .setScale(2, RoundingMode.HALF_UP)
 }
 

@@ -145,7 +145,7 @@ class ProductServiceImpl(
             brand = productRequest.brand.trim(),
             description = productRequest.description?.trim(),
             price = productRequest.price,
-            inventory = productRequest.inventory,
+            stock = productRequest.inventory,
             images = mutableListOf(),
             category = category
         )
@@ -193,7 +193,7 @@ class ProductServiceImpl(
             if (newInventory < 0) {
                 throw IllegalArgumentException("Inventory cannot be negative.")
             }
-            productToUpdate.inventory = newInventory
+            productToUpdate.stock = newInventory
         }
 
         updateRequest.categoryName?.let { categoryNameFromRequest ->
