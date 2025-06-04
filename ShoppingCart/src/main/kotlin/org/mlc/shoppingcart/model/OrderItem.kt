@@ -98,7 +98,7 @@ data class OrderItem(
      * to prevent triggering lazy loading or further recursive calls, instead using their IDs.
      */
     override fun toString(): String {
-        return "OrderItem(id=$id, productId=${product.id}, quantity=$quantity, unitPrice=$unitPrice, totalPrice=$totalPrice, orderId=${order.id})"
+        return "OrderItem(id=$id, productId=${product.id}, quantity=$quantity, unitPrice=$unitPrice, totalPrice=$totalPrice, orderId=${order?.id})"
     }
 
     init {
@@ -114,9 +114,6 @@ data class OrderItem(
  * This should be called whenever [quantity] or [unitPrice] changes.
  */
 fun OrderItem.updateTotalPrice() {
-    // Corrected calculation: setScale applies to the BigDecimal(quantity) before multiplication,
-    // or to the final result, but typically you want intermediate precision or final precision.
-    // For simple multiplication, applying to the result is fine.
     totalPrice = unitPrice.multiply(BigDecimal(quantity))
         .setScale(2, RoundingMode.HALF_UP)
 }
