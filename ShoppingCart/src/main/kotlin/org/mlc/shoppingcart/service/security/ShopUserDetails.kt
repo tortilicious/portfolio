@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails
 
 
 data class ShopUserDetails(private val user: User) : UserDetails {
+
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
         return mutableListOf(SimpleGrantedAuthority("ROLE_${user.role.name}"))
     }
