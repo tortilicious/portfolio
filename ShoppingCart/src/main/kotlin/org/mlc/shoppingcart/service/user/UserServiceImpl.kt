@@ -1,8 +1,7 @@
 package org.mlc.shoppingcart.service.user
 
-
 import org.mlc.shoppingcart.dto.user.*
-import org.mlc.shoppingcart.error.InvalidCredentialsException
+// Ya no necesitas InvalidCredentialsException para el login aquí
 import org.mlc.shoppingcart.error.UserAlreadyExistsException
 import org.mlc.shoppingcart.error.UserNotFoundException
 import org.mlc.shoppingcart.mapper.toUserResponse
@@ -15,20 +14,18 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
-
-@Service
+@Service // Asegúrate que la implementación tenga @Service, no la interfaz UserService.
 class UserServiceImpl(
     private val userRepository: UserRepository,
     private val cartRepository: CartRepository,
     private val passwordEncoder: PasswordEncoder
-) : UserService {
-
+) : UserService { // Asumo que tienes una interfaz UserService
 
     @Transactional
     override fun registerNewUser(request: CreateUserRequest): UserResponse {
-        val user = userRepository.findByEmail(request.email)
-
-        if (user != null) throw UserAlreadyExistsException("User already exists")
+        userRepository.findByEmail(request.email)?.let {
+            throw UserAlreadyExistsException("User with email ${request.email} already exists")
+        }
 
         val hashedPassword = passwordEncoder.encode(request.password)
         val newUser = User(
@@ -39,66 +36,46 @@ class UserServiceImpl(
         )
         val savedUser = userRepository.save(newUser)
 
+        // Crear y asociar carrito
         val newCart = Cart(user = savedUser)
-        val savedCart = cartRepository.save(newCart)
-
-        savedUser.cart = savedCart
-        userRepository.save(savedUser)
-
+        cartRepository.save(newCart)
         return savedUser.toUserResponse()
-
-    }
-
-    @Transactional(readOnly = true)
-    override fun userLogin(request: LoginRequest): LoginResponse {
-        val user = userRepository.findByEmail(request.email)
-            ?: throw UserNotFoundException("User does not exists")
-
-        if (!passwordEncoder.matches(request.password, user.password)) {
-            throw InvalidCredentialsException("Invalid credentials")
-        } else {
-            return LoginResponse(
-                id = user.id,
-                email = user.email,
-                message = "Login successful"
-            )
-        }
     }
 
 
     @Transactional
     override fun updateUserProfile(request: UpdateUserRequest, userId: Long): UserResponse {
         val user = userRepository.findByIdOrNull(userId)
+            ?: throw UserNotFoundException("User not found with ID: $userId")
 
-        if (user != null) {
-            request.email?.let { user.email = it }
-            request.password?.let { user.password = passwordEncoder.encode(it) }
-            request.firstName?.let { user.firstName = it }
-            request.lastName?.let { user.lastName = it }
+        request.email?.let { user.email = it }
+        request.password?.let { user.password = passwordEncoder.encode(it) }
+        request.firstName?.let { user.firstName = it }
+        request.lastName?.let { user.lastName = it }
 
-            val savedUser = userRepository.save(user)
-            return savedUser.toUserResponse()
-        }
-        throw UserNotFoundException("User not found")
+        val savedUser = userRepository.save(user)
+        return savedUser.toUserResponse()
     }
 
     @Transactional
     override fun deleteUser(userId: Long) {
-        val user = userRepository.findByIdOrNull(userId)
-            ?: throw UserNotFoundException("User not found")
-        userRepository.delete(user)
+        if (!userRepository.existsById(userId)) {
+            throw UserNotFoundException("User not found with ID: $userId")
+        }
+        userRepository.deleteById(userId)
     }
 
+    @Transactional(readOnly = true)
     override fun getUserById(userId: Long): UserResponse {
         val user = userRepository.findByIdOrNull(userId)
-            ?: throw UserNotFoundException("User not found")
+            ?: throw UserNotFoundException("User not found with ID: $userId")
         return user.toUserResponse()
     }
 
+    @Transactional(readOnly = true)
     override fun getUserByEmail(email: String): UserResponse {
         val user = userRepository.findByEmail(email)
-            ?: throw UserNotFoundException("User not found")
+            ?: throw UserNotFoundException("User not found with email: $email")
         return user.toUserResponse()
     }
-
 }

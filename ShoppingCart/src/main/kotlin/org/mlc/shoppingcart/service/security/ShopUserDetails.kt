@@ -6,7 +6,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 
 
-
 data class ShopUserDetails(private val user: User) : UserDetails {
 
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
@@ -16,5 +15,8 @@ data class ShopUserDetails(private val user: User) : UserDetails {
     override fun getPassword(): String = user.password
 
     override fun getUsername(): String = user.email
+
+    fun getId(): Long = user.id
+
 
 }
