@@ -3,6 +3,7 @@ package org.mlc.gastosapi.repository
 import org.mlc.gastosapi.model.DivisionGasto
 import org.springframework.data.jpa.repository.JpaRepository
 
+
 interface DivisionGastoRepository : JpaRepository<DivisionGasto, Long> {
     /**
      * Busca todas las divisiones de deuda de un usuario específico.
