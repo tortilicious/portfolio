@@ -5,16 +5,15 @@ import jakarta.persistence.*
 /**
  * Representa a un usuario en el sistema.
  *
- * @property id El identificador único del usuario, generado por la base de datos.
+ * @property id El identificador único del usuario.
  * @property nombre El nombre completo del usuario.
- * @property email La dirección de correo electrónico única del usuario. Se usará para el login.
+ * @property email La dirección de correo electrónico única del usuario.
  * @property passwordHash El hash de la contraseña del usuario.
- * @property grupos El conjunto de [Grupo]s a los que pertenece este usuario. La relación es gestionada por la entidad Grupo.
+ * @property pertenencias El conjunto de relaciones de pertenencia de este usuario a diferentes grupos.
  */
 @Entity
 @Table(name = "usuarios")
 data class Usuario(
-
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
 
@@ -27,6 +26,6 @@ data class Usuario(
     @Column(nullable = false)
     var passwordHash: String,
 
-    @ManyToMany(mappedBy = "miembros")
-    val grupos: MutableSet<Grupo> = mutableSetOf()
+    @OneToMany(mappedBy = "usuario", cascade = [CascadeType.ALL], orphanRemoval = true)
+    val pertenencias: MutableSet<PertenenciaGrupo> = mutableSetOf()
 )
