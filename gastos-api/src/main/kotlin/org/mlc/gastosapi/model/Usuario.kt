@@ -27,5 +27,5 @@ data class Usuario(
     var passwordHash: String,
 
     @OneToMany(mappedBy = "usuario", cascade = [CascadeType.ALL], orphanRemoval = true)
-    val pertenencias: MutableSet<PertenenciaGrupo> = mutableSetOf()
+    val pertenencias: MutableSet<Membresia> = mutableSetOf()
 )

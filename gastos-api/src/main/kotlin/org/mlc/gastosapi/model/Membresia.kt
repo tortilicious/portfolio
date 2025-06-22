@@ -13,8 +13,8 @@ import jakarta.persistence.*
  * @property rol El rol que el usuario desempeña en dicho grupo.
  */
 @Entity
-@Table(name = "pertenencia_grupo")
-data class PertenenciaGrupo (
+@Table(name = "membresia")
+data class Membresia (
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
 

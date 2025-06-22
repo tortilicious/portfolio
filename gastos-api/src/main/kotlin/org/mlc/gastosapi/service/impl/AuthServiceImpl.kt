@@ -7,7 +7,7 @@ import org.mlc.gastosapi.dto.auth.RespuestaAuth
 import org.mlc.gastosapi.model.Usuario
 import org.mlc.gastosapi.repository.UsuarioRepository
 import org.mlc.gastosapi.service.AuthService
-import org.mlc.gastosapi.utils.Dto // Asumo que esta es la importación para tu función de mapeo .Dto()
+import org.mlc.gastosapi.utils.dto // Asumo que esta es la importación para tu función de mapeo .Dto()
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
@@ -53,7 +53,7 @@ class AuthServiceImpl(
         val token = "dummyToken-for${nuevoUsuario.email}" // TODO: implementar JwtProvider
 
         // 4.- Devolver la respuesta
-        val respuesta = RespuestaAuth(token, nuevoUsuario.Dto())
+        val respuesta = RespuestaAuth(token, nuevoUsuario.dto())
         return respuesta
     }
 
@@ -78,7 +78,7 @@ class AuthServiceImpl(
         val token = "dummy-jwt-token-for-${usuario.email}" // TODO: Reemplazar con JwtProvider
 
         // 4. Devolver la RespuestaAuth
-        return RespuestaAuth(token, usuario.Dto())
+        return RespuestaAuth(token, usuario.dto())
     }
 
     /**
