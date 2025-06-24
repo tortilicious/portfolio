@@ -4,6 +4,7 @@ import org.mlc.gastosapi.dto.division_gasto.RespuestaDivisionGasto
 import org.mlc.gastosapi.dto.gasto.RespuestaGasto
 import org.mlc.gastosapi.dto.grupo.RespuestaGrupo
 import org.mlc.gastosapi.dto.grupo.RespuestaMiembroGrupo
+import org.mlc.gastosapi.dto.saldo.RespuestaTransaccion
 import org.mlc.gastosapi.dto.usuario.RespuestaUsuario
 import org.mlc.gastosapi.model.*
 
@@ -49,3 +50,4 @@ fun DivisionGasto.dto(): RespuestaDivisionGasto {
         montoAdeudado = cantidadDebida
     )
 }
+

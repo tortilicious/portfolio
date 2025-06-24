@@ -64,10 +64,9 @@ class GastoServiceImpl(
             }
         }
 
-        // CORRECCIÓN: Se usa fold para sumar BigDecimal y compareTo para comparar.
-        val sumaDivisones = peticion.divisionGasto.map { it.montoAdeudado }.fold(BigDecimal.ZERO, BigDecimal::add)
-        if (peticion.monto.compareTo(sumaDivisones) != 0) {
-            throw IllegalArgumentException("La suma de las divisiones ($sumaDivisones) no coincide con el monto total del gasto (${peticion.monto})")
+        val sumaDivisiones = peticion.divisionGasto.map { it.montoAdeudado }.fold(BigDecimal.ZERO, BigDecimal::add)
+        if (peticion.monto.compareTo(sumaDivisiones) != 0) {
+            throw IllegalArgumentException("La suma de las divisiones ($sumaDivisiones) no coincide con el monto total del gasto (${peticion.monto})")
         }
 
         val pagador = usuarioRepository.findByIdOrNull(peticion.pagadorId)!!
