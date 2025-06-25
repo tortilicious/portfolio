@@ -29,4 +29,8 @@ data class Grupo(
 
     @OneToMany(mappedBy = "grupo", cascade = [CascadeType.ALL], orphanRemoval = true)
     val miembros: MutableSet<Membresia> = mutableSetOf()
-)
+) {
+    override fun hashCode(): Int {
+        return id.hashCode()
+    }
+}

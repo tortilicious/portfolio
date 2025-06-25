@@ -4,9 +4,11 @@ import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.Jwts.SIG.HS512
 import io.jsonwebtoken.security.Keys
 import io.jsonwebtoken.security.SignatureException
+import jakarta.annotation.PostConstruct
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import java.util.*
+import javax.crypto.SecretKey
 
 /**
  * Componente responsable de la generación, validación y extracción de información
@@ -36,7 +38,12 @@ class JwtProvider {
      * Se inicializa de forma perezosa (`lazy`) para asegurar que se cree una sola vez
      * cuando se necesite por primera vez.
      */
-    private val clave by lazy { Keys.hmacShaKeyFor(secreto.toByteArray()) }
+    private lateinit var clave: SecretKey
+
+    @PostConstruct
+    fun init() {
+        clave = Keys.hmacShaKeyFor(secreto.toByteArray())
+    }
 
     /**
      * Genera un nuevo token JWT para un usuario específico.
@@ -81,7 +88,6 @@ class JwtProvider {
      */
     fun validarToken(token: String): Boolean {
         try {
-            // Intenta parsear el token. Si tiene éxito, la firma es correcta y no ha expirado.
             Jwts.parser()
                 .verifyWith(clave)
                 .build()

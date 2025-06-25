@@ -28,4 +28,8 @@ data class Usuario(
 
     @OneToMany(mappedBy = "usuario", cascade = [CascadeType.ALL], orphanRemoval = true)
     val pertenencias: MutableSet<Membresia> = mutableSetOf()
-)
+) {
+    override fun hashCode(): Int {
+        return id.hashCode()
+    }
+}

@@ -29,4 +29,8 @@ data class Membresia (
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     var rol: RolGrupo
-)
+) {
+    override fun hashCode(): Int {
+        return id.hashCode()
+    }
+}
