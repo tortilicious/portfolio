@@ -1,4 +1,4 @@
-package org.mlc.gastosapi.config
+package org.mlc.gastosapi.security
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

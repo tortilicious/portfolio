@@ -3,7 +3,6 @@ package org.mlc.gastosapi.controller
 import org.mlc.gastosapi.dto.auth.PeticionLogin
 import org.mlc.gastosapi.dto.auth.PeticionRegistro
 import org.mlc.gastosapi.dto.auth.RespuestaAuth
-import org.mlc.gastosapi.dto.usuario.RespuestaUsuario
 import org.mlc.gastosapi.service.AuthService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
