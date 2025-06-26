@@ -26,7 +26,7 @@ class JwtAuthenticationFilter(
 ) : OncePerRequestFilter() {
 
     /**
-     * El método principal del filtro que procesa cada petición entrante.
+     * El metodo principal del filtro que procesa cada petición entrante.
      *
      * @param request La petición HTTP entrante.
      * @param response La respuesta HTTP que se enviará.
@@ -52,7 +52,7 @@ class JwtAuthenticationFilter(
             val authToken = UsernamePasswordAuthenticationToken(
                 userDetails,
                 null,
-                userDetails.authorities // Los roles/permisos del usuario.
+                userDetails.authorities
             )
             authToken.details = WebAuthenticationDetailsSource().buildDetails(request)
 

@@ -2,14 +2,15 @@ package org.mlc.gastosapi.service
 
 import org.mlc.gastosapi.dto.grupo.PeticionGrupo
 import org.mlc.gastosapi.dto.grupo.RespuestaGrupo
-import org.mlc.gastosapi.dto.usuario.RespuestaUsuario
+import org.mlc.gastosapi.model.RolGrupo
 
 
 interface GrupoService {
-    fun crearGrupo(idUsuario: Long, peticion: PeticionGrupo): RespuestaGrupo
-    fun eliminarGrupo(idGrupo: Long, idUsuario: Long)
-    fun obtenerGruposUsuario(idUsuario: Long): List<RespuestaGrupo>
-    fun obtenerMiembrosGrupo(idGrupo: Long): List<RespuestaUsuario>
-    fun agregarMiembroGrupo(idGrupo: Long, idUsuarioActual: Long, idUsuarioAgregado: Long): RespuestaGrupo
-    fun eliminarMiembroGrupo(idGrupo: Long, idUsuarioActual: Long, idUsuarioEliminado: Long)
+    fun crearGrupo(idUsuarioActual: Long, peticion: PeticionGrupo): RespuestaGrupo
+    fun eliminarGrupo(idGrupo: Long, idUsuarioActual: Long)
+    fun obtenerGruposUsuario(idUsuarioActual: Long): List<RespuestaGrupo>
+    fun obtenerGrupo(idUsuarioActual: Long, idGrupo: Long): RespuestaGrupo
+    fun agregarMiembro(idGrupo: Long, idUsuarioActual: Long, emailUsuarioAAgregar: String): RespuestaGrupo
+    fun eliminarMiembro(idGrupo: Long, idUsuarioActual: Long, idUsuarioAEliminar: Long)
+    fun actualizarRolMiembro(idGrupo: Long, idUsuarioActual: Long, idUsuarioAActualizar: Long, nuevoRol: RolGrupo): RespuestaGrupo
 }

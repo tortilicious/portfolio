@@ -1,7 +1,7 @@
 package org.mlc.gastosapi.service.impl
 
 import org.mlc.gastosapi.repository.UsuarioRepository
-import org.springframework.security.core.userdetails.User
+import org.mlc.gastosapi.security.CustomUserDetails
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
@@ -35,10 +35,6 @@ class UserDetailsServiceImpl(
             ?: throw UsernameNotFoundException("Usuario no encontrado con el email: $username")
 
         // Convertimos nuestro objeto 'Usuario' a un objeto 'UserDetails' que Spring entiende.
-        return User
-            .withUsername(usuario.email)
-            .password(usuario.passwordHash)
-            .authorities(emptyList()) // Por ahora, sin roles específicos.
-            .build()
+        return CustomUserDetails(usuario)
     }
 }
