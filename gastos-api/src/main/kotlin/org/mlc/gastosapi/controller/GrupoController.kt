@@ -1,7 +1,13 @@
 package org.mlc.gastosapi.controller
 
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
+import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.responses.ApiResponses
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import org.mlc.gastosapi.dto.grupo.PeticionAgregarMiembro
 import org.mlc.gastosapi.dto.grupo.PeticionGrupo
+import org.mlc.gastosapi.dto.grupo.PeticionNuevoRol
 import org.mlc.gastosapi.dto.grupo.RespuestaGrupo
 import org.mlc.gastosapi.dto.saldo.RespuestaSaldoGrupo
 import org.mlc.gastosapi.model.RolGrupo
@@ -13,24 +19,6 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
 
-// --- DTOs necesarios para las peticiones ---
-
-/**
- * DTO para la petición de añadir un nuevo miembro a un grupo.
- * @property email El email del usuario que se quiere añadir.
- */
-data class PeticionAgregarMiembro(
-    val email: String
-)
-
-/**
- * DTO para la petición de actualizar el rol de un miembro.
- * @property rol El nuevo rol que se le asignará al miembro.
- */
-data class PeticionActualizarRol(
-    val rol: RolGrupo
-)
-
 /**
  * Controlador para gestionar todas las operaciones relacionadas con los Grupos.
  * Todos los endpoints en este controlador están protegidos y requieren un token JWT válido.
@@ -40,6 +28,7 @@ data class PeticionActualizarRol(
  */
 @RestController
 @RequestMapping("/api/grupos")
+@SecurityRequirement(name = "BearerAuth") // Aplica el requisito de seguridad a todo el controlador.
 class GrupoController(
     private val grupoService: GrupoService,
     private val saldoService: SaldoService
@@ -57,6 +46,11 @@ class GrupoController(
      * @param customUserDetails Objeto del usuario autenticado, inyectado por Spring Security.
      * @return Una respuesta 201 Created con los datos del grupo recién creado.
      */
+    @Operation(summary = "Crea un nuevo grupo")
+    @ApiResponses(value = [
+        ApiResponse(responseCode = "201", description = "Grupo creado exitosamente."),
+        ApiResponse(responseCode = "403", description = "No autorizado (token inválido o ausente).")
+    ])
     @PostMapping
     fun crearGrupo(
         @RequestBody peticion: PeticionGrupo,
@@ -76,9 +70,15 @@ class GrupoController(
      * @param customUserDetails Objeto del usuario autenticado.
      * @return Una respuesta 200 OK con los datos del grupo actualizado.
      */
+    @Operation(summary = "Añade un nuevo miembro a un grupo")
+    @ApiResponses(value = [
+        ApiResponse(responseCode = "200", description = "Miembro añadido exitosamente."),
+        ApiResponse(responseCode = "403", description = "Acceso denegado (no eres administrador del grupo)."),
+        ApiResponse(responseCode = "404", description = "El grupo o el usuario a añadir no existen.")
+    ])
     @PostMapping("/{idGrupo}/miembros")
     fun agregarMiembro(
-        @PathVariable idGrupo: Long,
+        @Parameter(description = "ID del grupo al que se añadirá el miembro.") @PathVariable idGrupo: Long,
         @RequestBody peticion: PeticionAgregarMiembro,
         @AuthenticationPrincipal customUserDetails: CustomUserDetails
     ): ResponseEntity<RespuestaGrupo> {
@@ -88,7 +88,7 @@ class GrupoController(
     }
 
     // =================================================================================
-    // READ
+    // READ (Leer Recursos)
     // =================================================================================
 
     /**
@@ -97,6 +97,11 @@ class GrupoController(
      * @param customUserDetails Objeto del usuario autenticado.
      * @return Una respuesta 200 OK con la lista de grupos.
      */
+    @Operation(summary = "Obtiene la lista de grupos del usuario")
+    @ApiResponses(value = [
+        ApiResponse(responseCode = "200", description = "Lista de grupos obtenida."),
+        ApiResponse(responseCode = "403", description = "No autorizado.")
+    ])
     @GetMapping
     fun obtenerListadoGrupos(
         @AuthenticationPrincipal customUserDetails: CustomUserDetails
@@ -114,10 +119,16 @@ class GrupoController(
      * @param idGrupo El ID del grupo a obtener, extraído de la URL.
      * @return Una respuesta 200 OK con los datos del grupo.
      */
+    @Operation(summary = "Obtiene los detalles de un grupo específico")
+    @ApiResponses(value = [
+        ApiResponse(responseCode = "200", description = "Datos del grupo obtenidos."),
+        ApiResponse(responseCode = "403", description = "Acceso denegado (no eres miembro del grupo)."),
+        ApiResponse(responseCode = "404", description = "El grupo no existe.")
+    ])
     @GetMapping("/{idGrupo}")
     fun obtenerGrupoPorId(
         @AuthenticationPrincipal customUserDetails: CustomUserDetails,
-        @PathVariable idGrupo: Long
+        @Parameter(description = "ID del grupo a obtener.") @PathVariable idGrupo: Long
     ): ResponseEntity<RespuestaGrupo> {
         val grupo = grupoService.obtenerGrupo(customUserDetails.usuario.id, idGrupo)
         return ResponseEntity.ok(grupo)
@@ -131,10 +142,15 @@ class GrupoController(
      * @param idGrupo El ID del grupo para el que se calcularán los saldos.
      * @return Una respuesta 200 OK con el objeto de saldos del grupo.
      */
+    @Operation(summary = "Obtiene los saldos de un grupo")
+    @ApiResponses(value = [
+        ApiResponse(responseCode = "200", description = "Saldos del grupo calculados correctamente."),
+        ApiResponse(responseCode = "403", description = "Acceso denegado (no eres miembro del grupo).")
+    ])
     @GetMapping("/{idGrupo}/saldos")
     fun obtenerSaldosGrupo(
         @AuthenticationPrincipal customUserDetails: CustomUserDetails,
-        @PathVariable idGrupo: Long
+        @Parameter(description = "ID del grupo para el que se calcularán los saldos.") @PathVariable idGrupo: Long
     ): ResponseEntity<RespuestaSaldoGrupo> {
         val idUsuarioActual = customUserDetails.usuario.id
         val saldos = saldoService.obtenerSaldosDeGrupo(idGrupo, idUsuarioActual)
@@ -142,7 +158,7 @@ class GrupoController(
     }
 
     // =================================================================================
-    // UPDATE
+    // UPDATE (Actualizar Recursos)
     // =================================================================================
 
     /**
@@ -155,25 +171,31 @@ class GrupoController(
      * @param peticion DTO con el nuevo rol a asignar.
      * @return Una respuesta 200 OK con los datos del grupo actualizado.
      */
+    @Operation(summary = "Actualiza el rol de un miembro del grupo")
+    @ApiResponses(value = [
+        ApiResponse(responseCode = "200", description = "Rol actualizado correctamente."),
+        ApiResponse(responseCode = "403", description = "Acceso denegado (no eres administrador)."),
+        ApiResponse(responseCode = "404", description = "El grupo o el miembro no existen.")
+    ])
     @PutMapping("/{idGrupo}/miembros/{idUsuarioAActualizar}")
     fun modificarRolUsuarioGrupo(
         @AuthenticationPrincipal customUserDetails: CustomUserDetails,
-        @PathVariable idGrupo: Long,
-        @PathVariable idUsuarioAActualizar: Long,
-        @RequestBody peticion: PeticionActualizarRol
+        @Parameter(description = "ID del grupo.") @PathVariable idGrupo: Long,
+        @Parameter(description = "ID del usuario cuyo rol se modificará.") @PathVariable idUsuarioAActualizar: Long,
+        @RequestBody peticion: PeticionNuevoRol
     ): ResponseEntity<RespuestaGrupo> {
         val idUsuarioActual = customUserDetails.usuario.id
         val grupoActualizado = grupoService.actualizarRolMiembro(
             idGrupo = idGrupo,
             idUsuarioActual = idUsuarioActual,
             idUsuarioAActualizar = idUsuarioAActualizar,
-            nuevoRol = peticion.rol
+            nuevoRol = peticion.nuevoRol
         )
         return ResponseEntity.ok(grupoActualizado)
     }
 
     // =================================================================================
-    // DELETE
+    // DELETE (Eliminar Recursos)
     // =================================================================================
 
     /**
@@ -184,10 +206,16 @@ class GrupoController(
      * @param idGrupo El ID del grupo a eliminar.
      * @return Una respuesta 204 No Content si la operación fue exitosa.
      */
+    @Operation(summary = "Elimina un grupo completo")
+    @ApiResponses(value = [
+        ApiResponse(responseCode = "204", description = "Grupo eliminado exitosamente."),
+        ApiResponse(responseCode = "403", description = "Acceso denegado (no eres el creador del grupo)."),
+        ApiResponse(responseCode = "404", description = "El grupo no existe.")
+    ])
     @DeleteMapping("/{idGrupo}")
     fun eliminarGrupoPorId(
         @AuthenticationPrincipal customUserDetails: CustomUserDetails,
-        @PathVariable idGrupo: Long
+        @Parameter(description = "ID del grupo a eliminar.") @PathVariable idGrupo: Long
     ): ResponseEntity<Unit> {
         grupoService.eliminarGrupo(idGrupo, customUserDetails.usuario.id)
         return ResponseEntity.noContent().build()
@@ -202,10 +230,16 @@ class GrupoController(
      * @param customUserDetails Objeto del usuario autenticado.
      * @return Una respuesta 204 No Content si la operación fue exitosa.
      */
+    @Operation(summary = "Elimina a un miembro de un grupo")
+    @ApiResponses(value = [
+        ApiResponse(responseCode = "204", description = "Miembro eliminado exitosamente."),
+        ApiResponse(responseCode = "403", description = "Acceso denegado (no eres administrador)."),
+        ApiResponse(responseCode = "404", description = "El grupo o el miembro no existen.")
+    ])
     @DeleteMapping("/{idGrupo}/miembros/{idUsuarioAEliminar}")
     fun eliminarMiembro(
-        @PathVariable idGrupo: Long,
-        @PathVariable idUsuarioAEliminar: Long,
+        @Parameter(description = "ID del grupo.") @PathVariable idGrupo: Long,
+        @Parameter(description = "ID del usuario a eliminar del grupo.") @PathVariable idUsuarioAEliminar: Long,
         @AuthenticationPrincipal customUserDetails: CustomUserDetails
     ): ResponseEntity<Unit> {
         val idUsuarioActual = customUserDetails.usuario.id
