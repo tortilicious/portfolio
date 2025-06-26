@@ -171,7 +171,7 @@ Aquí tienes un par de ejemplos de cómo interactuar con la API usando cURL.
 
 ## 📧 Contacto
 
-[Tu Nombre] - [tu.email@ejemplo.com]
+[Tu Nombre] - [miguel.lozano.cerrada@gmail.com]
 
 Enlace al Proyecto: [https://github.com/tortilicious/portfolio/tree/main/gastos-api](https://github.com/tortilicious/portfolio/tree/main/gastos-api)
 
