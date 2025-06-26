@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
+import jakarta.validation.Valid
 import org.mlc.gastosapi.dto.grupo.PeticionAgregarMiembro
 import org.mlc.gastosapi.dto.grupo.PeticionGrupo
 import org.mlc.gastosapi.dto.grupo.PeticionNuevoRol
@@ -53,7 +54,7 @@ class GrupoController(
     ])
     @PostMapping
     fun crearGrupo(
-        @RequestBody peticion: PeticionGrupo,
+        @Valid @RequestBody peticion: PeticionGrupo,
         @AuthenticationPrincipal customUserDetails: CustomUserDetails
     ): ResponseEntity<RespuestaGrupo> {
         val idUsuarioActual = customUserDetails.usuario.id
@@ -79,7 +80,7 @@ class GrupoController(
     @PostMapping("/{idGrupo}/miembros")
     fun agregarMiembro(
         @Parameter(description = "ID del grupo al que se añadirá el miembro.") @PathVariable idGrupo: Long,
-        @RequestBody peticion: PeticionAgregarMiembro,
+        @Valid @RequestBody peticion: PeticionAgregarMiembro,
         @AuthenticationPrincipal customUserDetails: CustomUserDetails
     ): ResponseEntity<RespuestaGrupo> {
         val idUsuarioActual = customUserDetails.usuario.id

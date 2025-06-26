@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
+import jakarta.validation.Valid
 import org.mlc.gastosapi.dto.gasto.PeticionGasto
 import org.mlc.gastosapi.dto.gasto.RespuestaGasto
 import org.mlc.gastosapi.security.CustomUserDetails
@@ -50,7 +51,7 @@ class GastoController(
     fun nuevoGasto(
         @AuthenticationPrincipal customUserDetails: CustomUserDetails,
         @Parameter(description = "ID del grupo donde se añadirá el gasto.") @PathVariable idGrupo: Long,
-        @RequestBody peticion: PeticionGasto
+        @Valid @RequestBody peticion: PeticionGasto
     ): ResponseEntity<RespuestaGasto> {
         val nuevoGasto = gastoService.crearGasto(idGrupo, customUserDetails.usuario.id, peticion)
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevoGasto)

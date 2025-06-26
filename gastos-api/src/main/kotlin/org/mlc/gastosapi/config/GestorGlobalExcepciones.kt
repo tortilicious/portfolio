@@ -4,6 +4,7 @@ import jakarta.persistence.EntityNotFoundException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.AccessDeniedException
+import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 
@@ -90,5 +91,20 @@ class GestorGlobalExcepciones {
         // Imprimimos la traza del error en la consola del servidor para poder depurarlo.
         ex.printStackTrace()
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(respuestaError)
+    }
+
+    /**
+     * Maneja las excepciones 'MethodArgumentNotValidException'.
+     * Ocurre cuando un DTO anotado con @Valid en un controlador no supera las reglas de validación.
+     * Devuelve un código de estado 400 Bad Request con una lista de los errores.
+     */
+    @ExceptionHandler(MethodArgumentNotValidException::class)
+    fun handleValidationExceptions(ex: MethodArgumentNotValidException): ResponseEntity<Map<String, List<String?>>> {
+        val errors = ex.bindingResult.fieldErrors
+            .map { it.defaultMessage }
+
+        val errorResponse = mapOf("errors" to errors)
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse)
     }
 }

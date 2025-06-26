@@ -1,5 +1,7 @@
 package org.mlc.gastosapi.dto.auth
 
+import jakarta.validation.constraints.NotBlank
+
 
 /**
  * DTO para la petición de inicio de sesión.
@@ -7,6 +9,8 @@ package org.mlc.gastosapi.dto.auth
  * @property password La contraseña del usuario.
  */
 data class PeticionLogin(
+    @field:NotBlank(message = "El email no puede estar vacío.")
     val email: String,
+    @field:NotBlank(message = "La contraseña no puede estar vacía.")
     val password: String
 )

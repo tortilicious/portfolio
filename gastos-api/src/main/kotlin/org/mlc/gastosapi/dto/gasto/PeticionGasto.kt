@@ -1,5 +1,8 @@
 package org.mlc.gastosapi.dto.gasto
 
+import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.NotEmpty
+import jakarta.validation.constraints.Positive
 import org.mlc.gastosapi.dto.division_gasto.PeticionDivisionGasto
 import java.math.BigDecimal
 
@@ -13,8 +16,11 @@ import java.math.BigDecimal
  * @property divisionGasto Una lista que detalla cómo se divide el gasto entre los miembros.
  */
 data class PeticionGasto(
+    @field:NotBlank(message = "La descripción del gasto no puede estar vacía.")
     val descripcion: String,
+    @field:Positive(message = "El monto debe ser una cantidad positiva.")
     val monto: BigDecimal,
     val pagadorId: Long,
+    @field:NotEmpty(message = "La lista de divisiones no puede estar vacía.")
     val divisionGasto: List<PeticionDivisionGasto>
 )

@@ -3,6 +3,7 @@ package org.mlc.gastosapi.controller
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
+import jakarta.validation.Valid
 import org.mlc.gastosapi.dto.auth.PeticionLogin
 import org.mlc.gastosapi.dto.auth.PeticionRegistro
 import org.mlc.gastosapi.dto.auth.RespuestaAuth
@@ -44,7 +45,7 @@ class AuthController(private val authService: AuthService) {
         ]
     )
     @PostMapping("/registro")
-    fun registrarNuevoUsuario(@RequestBody peticion: PeticionRegistro): ResponseEntity<RespuestaAuth> {
+    fun registrarNuevoUsuario(@Valid @RequestBody peticion: PeticionRegistro): ResponseEntity<RespuestaAuth> {
         val registro = authService.registrarUsuario(peticion)
         return ResponseEntity.status(HttpStatus.CREATED).body(registro)
     }
@@ -72,7 +73,7 @@ class AuthController(private val authService: AuthService) {
         ]
     )
     @PostMapping("/login")
-    fun login(@RequestBody peticion: PeticionLogin): ResponseEntity<RespuestaAuth> {
+    fun login(@Valid @RequestBody peticion: PeticionLogin): ResponseEntity<RespuestaAuth> {
         val login = authService.login(peticion)
         return ResponseEntity.ok(login)
     }
