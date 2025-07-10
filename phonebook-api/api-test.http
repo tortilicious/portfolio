@@ -1,0 +1,29 @@
+### Test POST a Person without data
+POST https://phonebook-api-fdwy.onrender.com/api/contacts
+Content-Type: application/json
+
+{}
+
+### Test POST a Person with data
+POST https://phonebook-api-fdwy.onrender.com/api/contacts
+Content-Type: application/json
+
+{
+  "name": "Test API Name",
+  "number": "39-23-1724560"
+}
+
+### Test GET all Person
+GET https://phonebook-api-fdwy.onrender.com/api/contacts
+
+### Test GET a existing Person
+GET https://phonebook-api-fdwy.onrender.com/api/contacts/1
+
+### Test GET a non existing Person
+GET https://phonebook-api-fdwy.onrender.com/api/contacts/1312
+
+### Test DELETE an existing Person
+DELETE https://phonebook-api-fdwy.onrender.com/api/contacts/1
+
+### Test DELETE a non existing Person
+DELETE https://phonebook-api-fdwy.onrender.com/api/contacts/1231
